@@ -17,18 +17,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from base import Base
-from parse_signed_off_by import signed_off_by, signed_off_by_mark
-from pyparsing import ParseException
+import base
+import parse_signed_off_by
 import re
-from unittest import skip
 
-class SignedOffBy(Base):
+class SignedOffBy(base.Base):
 
     @classmethod
     def setUpClassLocal(cls):
         # match self.mark with no '+' preceding it
-        cls.mark = str(signed_off_by_mark).strip('"')
+        cls.mark = str(parse_signed_off_by.signed_off_by_mark).strip('"')
         cls.prog = re.compile("(?<!\+)%s" % cls.mark)
 
     def test_signed_off_by_presence(self):

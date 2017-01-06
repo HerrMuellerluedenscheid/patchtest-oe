@@ -19,9 +19,9 @@
 
 # NOTE:This is an oversimplified syntax of the mbox's summary
 
-from pyparsing import Word, alphanums, Literal, OneOrMore, printables, Optional
-from common import start, end, colon, opensquare, closesquare
+import pyparsing
+import common
 
-target        = OneOrMore(Word(printables.replace(':','')))
-summary       = OneOrMore(Word(printables))
-shortlog       = start + target + colon + summary + end
+target        = pyparsing.OneOrMore(pyparsing.Word(pyparsing.printables.replace(':','')))
+summary       = pyparsing.OneOrMore(pyparsing.Word(pyparsing.printables))
+shortlog       = common.start + target + common.colon + summary + common.end

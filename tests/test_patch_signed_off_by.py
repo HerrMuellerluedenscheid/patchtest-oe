@@ -17,13 +17,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from base import Base
-from parse_signed_off_by import signed_off_by, signed_off_by_mark
-from pyparsing import ParseException
+import base
+import parse_signed_off_by
 import re
-from unittest import skip
 
-class PatchSignedOffBy(Base):
+class PatchSignedOffBy(base.Base):
 
     @classmethod
     def setUpClassLocal(cls):
@@ -33,7 +31,7 @@ class PatchSignedOffBy(Base):
             if patch.path.endswith('.patch') and patch.is_added_file:
                 cls.newpatches.append(patch)
 
-        cls.mark = str(signed_off_by_mark).strip('"')
+        cls.mark = str(parse_signed_off_by.signed_off_by_mark).strip('"')
 
         # match PatchSignedOffBy.mark with '+' preceding it
         cls.prog = re.compile("(?<=\+)%s" % cls.mark)

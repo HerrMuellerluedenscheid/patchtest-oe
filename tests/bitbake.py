@@ -22,7 +22,6 @@ import re
 import base
 import subprocess
 from patchtestdata import PatchTestInput as pti
-import unittest
 
 def bitbake(args):
 

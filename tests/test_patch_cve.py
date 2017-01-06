@@ -17,11 +17,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from base import Base
+import base
 import os
 import re
 
-class CVE(Base):
+class CVE(base.Base):
 
     re_cve_pattern = re.compile("CVE\-\d{4}\-\d+", re.IGNORECASE)
     re_cve_word    = re.compile("\s*\+CVE\s?", re.IGNORECASE)

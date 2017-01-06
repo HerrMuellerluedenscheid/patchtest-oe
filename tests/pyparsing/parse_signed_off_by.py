@@ -18,17 +18,17 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-from pyparsing import Literal, OneOrMore, Regex
-from common import word, worddot, at, lessthan, greaterthan, start, end, colon
+import pyparsing
+import common
 
-name = Regex('\S+.*(?= <)')
-username = OneOrMore(worddot)
-domain = OneOrMore(worddot)
+name = pyparsing.Regex('\S+.*(?= <)')
+username = pyparsing.OneOrMore(common.worddot)
+domain = pyparsing.OneOrMore(common.worddot)
 
 # taken from https://pyparsing-public.wikispaces.com/Helpful+Expressions
-email = Regex(r"(?P<user>[A-Za-z0-9._%+-]+)@(?P<hostname>[A-Za-z0-9.-]+)\.(?P<domain>[A-Za-z]{2,})")
+email = pyparsing.Regex(r"(?P<user>[A-Za-z0-9._%+-]+)@(?P<hostname>[A-Za-z0-9.-]+)\.(?P<domain>[A-Za-z]{2,})")
 
-email_enclosed = lessthan + email + greaterthan
+email_enclosed = common.lessthan + email + common.greaterthan
 
-signed_off_by_mark = Literal("Signed-off-by")
-signed_off_by = start + signed_off_by_mark + colon + name + email_enclosed + end
+signed_off_by_mark = pyparsing.Literal("Signed-off-by")
+signed_off_by = common.start + signed_off_by_mark + common.colon + name + email_enclosed + common.end

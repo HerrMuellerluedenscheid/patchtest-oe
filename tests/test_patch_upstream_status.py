@@ -17,15 +17,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from base import Base
-
-from parse_upstream_status import upstream_status
+import base
 from parse_upstream_status import upstream_status_literal_valid_status as valid_status
 from parse_upstream_status import upstream_status_mark as mark
-from pyparsing import ParseException
+import pyparsing
 import re
 
-class PatchUpstreamStatus(Base):
+class PatchUpstreamStatus(base.Base):
 
     upstream_status_mark  = str(mark).strip('"')
     upstream_status_regex = re.compile("(?<=\+)%s" % upstream_status_mark)
@@ -67,7 +65,7 @@ class PatchUpstreamStatus(Base):
                     continue
                 if self.upstream_status_regex.search(line):
                     try:
-                        upstream_status.parseString(line.lstrip('+'))
-                    except ParseException as pe:
+                        parse_upstream_status.upstream_status.parseString(line.lstrip('+'))
+                    except pyparsing.ParseException as pe:
                         self.fail('Upstream-Status is in incorrect format',
                                   'Fix Upstream-Status format in %s so it is one of: %s' % (newpatch.path, ', '.join(valid_status)))

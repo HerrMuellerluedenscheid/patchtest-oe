@@ -17,9 +17,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from base import Base
+import base
 
-class CommitMessage(Base):
+class CommitMessage(base.Base):
 
     def test_commit_message_presence(self):
         for commit in CommitMessage.commits:

@@ -17,18 +17,18 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from pyparsing import Literal, LineStart, LineEnd, Word, alphas
+import pyparsing
 
 # general
-colon = Literal(":")
-start = LineStart()
-end   = LineEnd()
-at = Literal("@")
-lessthan = Literal("<")
-greaterthan = Literal(">")
-opensquare = Literal("[")
-closesquare = Literal("]")
+colon = pyparsing.Literal(":")
+start = pyparsing.LineStart()
+end   = pyparsing.LineEnd()
+at = pyparsing.Literal("@")
+lessthan = pyparsing.Literal("<")
+greaterthan = pyparsing.Literal(">")
+opensquare = pyparsing.Literal("[")
+closesquare = pyparsing.Literal("]")
 
 # word related
-word = Word(alphas)
-worddot = Word(alphas+".")
+word = pyparsing.Word(pyparsing.alphas)
+worddot = pyparsing.Word(pyparsing.alphas+".")

@@ -18,9 +18,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import re
-from base import Base
+import base
 
-class Bugzilla(Base):
+class Bugzilla(base.Base):
     rexp_detect     = re.compile("\[.*YOCTO.*\]", re.IGNORECASE)
     rexp_validation = re.compile("\[(\s?YOCTO\s?#\s?(\d+)\s?,?)+\]", re.IGNORECASE)
 

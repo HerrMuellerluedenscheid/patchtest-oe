@@ -17,9 +17,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import re
 import subprocess
-from base import Base
+import base
 from patchtestdata import PatchTestInput as pti
 
 def headlog():
@@ -29,7 +28,7 @@ def headlog():
         )
     return output.split('#')
 
-class Merge(Base):
+class Merge(base.Base):
 
     def test_series_merge_on_head(self):
         if not pti.repo.ismerged:

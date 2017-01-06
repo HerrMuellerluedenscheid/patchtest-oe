@@ -17,13 +17,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from base import Base
+import base
 import parse_shortlog
-from pyparsing import ParseException
+import pyparsing
 
 maxlength = 90
 
-class Shortlog(Base):
+class Shortlog(base.Base):
 
     def test_shortlog_presence(self):
         for commit in Shortlog.commits:
@@ -43,7 +43,7 @@ class Shortlog(Base):
                     continue
                 try:
                     parse_shortlog.shortlog.parseString(shortlog)
-                except ParseException as pe:
+                except pyparsing.ParseException as pe:
                     self.fail('Shortlog does not follow expected format',
                               'Commit shortlog (first line of commit message) should follow the format "<target>: <summary>"',
                               commit)

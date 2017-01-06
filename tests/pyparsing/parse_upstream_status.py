@@ -18,12 +18,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-from common import start, end, colon
-from pyparsing import Or, Literal
+import common
+import pyparsing
 
-upstream_status_literal_valid_status = ["Pending", "Submitted", "Accepted", "Backport", "Denied", "Inappropriate"]
-upstream_status_valid_status = Or(
-    [Literal(status) for status in upstream_status_literal_valid_status]
+upstream_status_literal_valid_status = ["Pcommon.ending", "Submitted", "Accepted", "Backport", "Denied", "Inappropriate"]
+upstream_status_valid_status = pyparsing.Or(
+    [pyparsing.Literal(status) for status in upstream_status_literal_valid_status]
 )
-upstream_status_mark         = Literal("Upstream-Status")
-upstream_status              = start + upstream_status_mark + colon + upstream_status_valid_status
+upstream_status_mark         = pyparsing.Literal("Upstream-Status")
+upstream_status              = common.start + upstream_status_mark + common.colon + upstream_status_valid_status
