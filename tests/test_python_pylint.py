@@ -21,8 +21,9 @@ import base
 import re
 import patchtestdata
 import pylint.epylint as lint
+import unittest
 
-#@unittest.skip('Pending for Yocto #10789]')
+@unittest.skip('Pending for Yocto #10789]')
 class PyLint(base.Base):
     pythonpatches = []
 
