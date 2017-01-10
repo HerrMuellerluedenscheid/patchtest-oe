@@ -21,7 +21,7 @@
 import common
 import pyparsing
 
-upstream_status_literal_valid_status = ["Pcommon.ending", "Submitted", "Accepted", "Backport", "Denied", "Inappropriate"]
+upstream_status_literal_valid_status = ["Pending", "Submitted", "Accepted", "Backport", "Denied", "Inappropriate"]
 upstream_status_valid_status = pyparsing.Or(
     [pyparsing.Literal(status) for status in upstream_status_literal_valid_status]
 )
