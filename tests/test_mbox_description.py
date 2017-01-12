@@ -18,9 +18,11 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import base
+import unittest
 
 class CommitMessage(base.Base):
 
+    @unittest.skip('Until general agreement with the community, disabling it')
     def test_commit_message_presence(self):
         for commit in CommitMessage.commits:
             if not commit.commit_message.strip():
