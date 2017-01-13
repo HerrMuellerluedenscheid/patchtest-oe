@@ -74,7 +74,7 @@ def formaterror(e, prog=re.compile('ERROR:', re.IGNORECASE)):
 class Bitbake(base.Base):
 
     # Matches PN and PV from a recipe filename
-    pnpv = re.compile("(?P<pn>^\S+)(_(?P<pv>\S+))?\.\S+")
+    pnpv = re.compile("(?P<pn>[a-zA-Z0-9\-]+)_?")
 
     added_pnpvs    = []
     modified_pnpvs = []
@@ -95,11 +95,11 @@ class Bitbake(base.Base):
                 elif patch.is_removed_file:
                     removed_paths.append(patch.path)
 
+
         added_matches    = [cls.pnpv.match(os.path.basename(path)) for path in added_paths]
         modified_matches = [cls.pnpv.match(os.path.basename(path)) for path in modified_paths]
         removed_matches  = [cls.pnpv.match(os.path.basename(path)) for path in removed_paths]
 
-        cls.added_pnpvs    = [(match.group('pn'), match.group('pv')) for match in added_matches if match]
-        cls.modified_pnpvs = [(match.group('pn'), match.group('pv')) for match in modified_matches if match]
-        cls.removed_pnpvs  = [(match.group('pn'), match.group('pv')) for match in removed_matches if match]
-
+        cls.added_pnpvs    = [(match.group('pn'), None) for match in added_matches if match]
+        cls.modified_pnpvs = [(match.group('pn'), None) for match in modified_matches if match]
+        cls.removed_pnpvs  = [(match.group('pn'), None) for match in removed_matches if match]

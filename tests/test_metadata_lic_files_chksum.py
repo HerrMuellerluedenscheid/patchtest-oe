@@ -49,29 +49,29 @@ class LicFilesChkSum(bitbake.Bitbake):
                           'Specify the variable %s in %s_%s' % (self.metadata, pn, pv))
 
     def pretest_lic_files_chksum_modified_not_mentioned(self):
-        if not self.modified_pnpvs:
-            self.skipTest('No modified recipes, skipping pretest')
+        if not (self.modified_pnpvs + self.added_pnpvs):
+            self.skipTest('No added or modified recipes, skipping pretest')
 
         # get the proper metadata values
-        for pn,pv in self.modified_pnpvs:
+        for pn,_ in self.modified_pnpvs + self.added_pnpvs:
             try:
                 patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(),self.metadata, pn)] = bitbake.getVar(self.metadata, pn)
             except subprocess.CalledProcessError:
                 self.skipTest('Target %s cannot be parse by bitbake' % pn)
 
     def test_lic_files_chksum_modified_not_mentioned(self):
-        if not self.modified_pnpvs:
-            self.skipTest('No modified recipes, skipping test')
+        if not (self.modified_pnpvs + self.added_pnpvs):
+            self.skipTest('No modified or added recipes, skipping test')
 
         # get the proper metadata values
-        for pn,pv in self.modified_pnpvs:
+        for pn,_ in self.modified_pnpvs + self.added_pnpvs:
             try:
                 patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(),self.metadata, pn)] = bitbake.getVar(self.metadata, pn)
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as cpe:
                 self.skipTest('Target %s cannot be parse by bitbake' % pn)
 
         # compare if there were changes between pre-merge and merge
-        for pn,_ in self.modified_pnpvs:
+        for pn,_ in self.modified_pnpvs + self.added_pnpvs:
             pretest = patchtestdata.PatchTestDataStore['pre%s-%s-%s' % (self.shortid(),self.metadata, pn)]
             test    = patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(),self.metadata, pn)]
 
