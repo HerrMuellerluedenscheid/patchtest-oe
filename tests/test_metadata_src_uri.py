@@ -29,18 +29,18 @@ class SrcUri(bitbake.Bitbake):
 
     def setUp(self):
         if self.unidiff_parse_error:
-            self.skipTest([('Parse error', self.unidiff_parse_error)])
+            self.skip([('Parse error', self.unidiff_parse_error)])
 
     def pretest_src_uri_left_files(self):
         if not self.modified_pnpvs:
-            self.skipTest('No modified recipes, skipping pretest')
+            self.skip('No modified recipes, skipping pretest')
 
         # get the proper metadata values
         for pn,pv in self.modified_pnpvs:
             try:
                 patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)] = bitbake.getVar(self.metadata, pn)
             except subprocess.CalledProcessError:
-                self.skipTest('Target %s cannot be parse by bitbake' % pn)
+                self.skip('Target %s cannot be parse by bitbake' % pn)
 
     def test_src_uri_left_files(self):
         if not self.modified_pnpvs:
@@ -51,7 +51,7 @@ class SrcUri(bitbake.Bitbake):
             try:
                 patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)] = bitbake.getVar(self.metadata, pn)
             except subprocess.CalledProcessError:
-                self.skipTest('Target %s cannot be parse by bitbake' % pn)
+                self.skip('Target %s cannot be parse by bitbake' % pn)
             
         for pn,_ in self.modified_pnpvs:
             pretest_src_uri = patchtestdata.PatchTestDataStore['pre%s-%s-%s' % (self.shortid(), self.metadata, pn)].split()
@@ -85,7 +85,7 @@ class SrcUri(bitbake.Bitbake):
                 for flag in [self.md5sum, self.sha256sum]:
                     patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), flag, pn)]  = bitbake.getFlag(flag, pn)
             except subprocess.CalledProcessError:
-                self.skipTest('Target %s cannot be parse by bitbake' % pn)
+                self.skip('Target %s cannot be parse by bitbake' % pn)
         
     def test_src_uri_checksums_not_changed(self):
         # get the proper metadata values
@@ -95,7 +95,7 @@ class SrcUri(bitbake.Bitbake):
                 for flag in [self.md5sum, self.sha256sum]:
                     patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), flag, pn)]  = bitbake.getFlag(flag, pn)
             except subprocess.CalledProcessError:
-                self.skipTest('Target %s cannot be parse by bitbake' % pn)
+                self.skip('Target %s cannot be parse by bitbake' % pn)
 
         # loop on every src_uri and check if checksums change
         for pn,_ in self.modified_pnpvs:

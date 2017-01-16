@@ -29,7 +29,7 @@ class CVE(base.Base):
 
     def setUp(self):
         if self.unidiff_parse_error:
-            self.skip([('Parse error', self.unidiff_parse_error)])
+            self.skip('Parse error %s' % self.unidiff_parse_error)
 
     def test_cve_presence_in_commit_message(self):
         for commit in CVE.commits:
@@ -48,12 +48,12 @@ class CVE(base.Base):
             if self.re_cve_pattern.search(' '.join([commit.shortlog for commit in CVE.commits])):
                 recipes = [os.path.basename(p.path).split('_')[0] for p in CVE.patchset]
                 if recipes[0] == recipes[1]:
-                    self.skipTest('No check is done on recipe upgrades')
+                    self.skip('No check is done on recipe upgrades')
 
         # Skip check on metadata classes
         if len(CVE.patchset) == 1:
             if CVE.patchset[0].path.endswith('.bbclass'):
-                self.skipTest('No check is done on classes')
+                self.skip('No check is done on classes')
 
         for commit in CVE.commits:
             if self.re_cve_pattern.search(commit.shortlog):

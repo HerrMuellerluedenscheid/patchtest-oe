@@ -30,7 +30,7 @@ class Summary(bitbake.Bitbake):
             try:
                 added_summaries.append(bitbake.getVar(self.metadata, pn))
             except subprocess.CalledProcessError:
-                self.skipTest('Target %s cannot be parse by bitbake' % pn)
+                self.skip('Target %s cannot be parse by bitbake' % pn)
 
         for summary in added_summaries:
             # "${PN} version ${PN}-${PR}" is the default, so fail if default

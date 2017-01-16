@@ -38,7 +38,7 @@ class LicFilesChkSum(bitbake.Bitbake):
             try:
                 added_licsums.append(bitbake.getVar(self.metadata, pn))
             except subprocess.CalledProcessError:
-                self.skipTest('Target %s cannot be parse by bitbake' % pn)
+                self.skip('Target %s cannot be parse by bitbake' % pn)
 
         for licsum in added_licsums:
             lic = bitbake.getVar(self.license, pn)
@@ -50,25 +50,25 @@ class LicFilesChkSum(bitbake.Bitbake):
 
     def pretest_lic_files_chksum_modified_not_mentioned(self):
         if not (self.modified_pnpvs + self.added_pnpvs):
-            self.skipTest('No added or modified recipes, skipping pretest')
+            self.skip('No added or modified recipes, skipping pretest')
 
         # get the proper metadata values
         for pn,_ in self.modified_pnpvs + self.added_pnpvs:
             try:
                 patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(),self.metadata, pn)] = bitbake.getVar(self.metadata, pn)
             except subprocess.CalledProcessError:
-                self.skipTest('Target %s cannot be parse by bitbake' % pn)
+                self.skip('Target %s cannot be parse by bitbake' % pn)
 
     def test_lic_files_chksum_modified_not_mentioned(self):
         if not (self.modified_pnpvs + self.added_pnpvs):
-            self.skipTest('No modified or added recipes, skipping test')
+            self.skip('No modified or added recipes, skipping test')
 
         # get the proper metadata values
         for pn,_ in self.modified_pnpvs + self.added_pnpvs:
             try:
                 patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(),self.metadata, pn)] = bitbake.getVar(self.metadata, pn)
             except subprocess.CalledProcessError as cpe:
-                self.skipTest('Target %s cannot be parse by bitbake' % pn)
+                self.skip('Target %s cannot be parse by bitbake' % pn)
 
         # compare if there were changes between pre-merge and merge
         for pn,_ in self.modified_pnpvs + self.added_pnpvs:

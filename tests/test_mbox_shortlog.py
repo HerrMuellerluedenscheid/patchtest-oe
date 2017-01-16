@@ -36,7 +36,7 @@ class Shortlog(base.Base):
         for commit in Shortlog.commits:
             shortlog = commit.shortlog
             if not shortlog.strip():
-                self.skipTest('Empty shortlog, no reason to execute shortlog format test')
+                self.skip('Empty shortlog, no reason to execute shortlog format test')
             else:
                 # no reason to re-check on revert shortlogs
                 if shortlog.startswith('Revert "'):

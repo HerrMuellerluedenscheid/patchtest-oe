@@ -21,9 +21,7 @@ import base
 import re
 import patchtestdata
 import pylint.epylint as lint
-import unittest
 
-@unittest.skip('Pending for Yocto #10789]')
 class PyLint(base.Base):
     pythonpatches = []
 
@@ -35,12 +33,14 @@ class PyLint(base.Base):
                 cls.pythonpatches.append(patch)
 
     def setUp(self):
+        self.skip('Pending for Yocto #10789]')
+
         if self.unidiff_parse_error:
             self.skip([('Python-unidiff parse error', self.unidiff_parse_error)])
         if not patchtestdata.PatchTestInput.repo.canbemerged:
-            self.skipTest('Patch cannot be merged, no reason to execute the test method')
+            self.skip('Patch cannot be merged, no reason to execute the test method')
         if not PyLint.pythonpatches:
-            self.skipTest('No python related patches, skipping test')
+            self.skip('No python related patches, skipping test')
 
     def pretest_pylint(self):
         patchtestdata.PatchTestDataStore['pylint_pretest'] = list()

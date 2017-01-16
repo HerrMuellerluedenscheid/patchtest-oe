@@ -108,9 +108,10 @@ class Base(unittest.TestCase):
 
         return super(Base, self).fail(json.dumps(value))
 
-    def skip(self, data=None):
+    def skip(self, issue, data=None):
         """ Convert the skip string to JSON"""
-        value = {'id': self.id()}
+        value = {'id': self.id(),
+                 'issue': issue}
 
         # extend return value with other useful info
         if data:

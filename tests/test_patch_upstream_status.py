@@ -42,7 +42,7 @@ class PatchUpstreamStatus(base.Base):
 
     def test_upstream_status_presence(self):
         if not PatchUpstreamStatus.newpatches:
-            self.skipTest("There are no new software patches, no reason to test %s presence" % self.upstream_status_mark)
+            self.skip("There are no new software patches, no reason to test %s presence" % self.upstream_status_mark)
 
         for newpatch in PatchUpstreamStatus.newpatches:
             payload = newpatch.__str__()

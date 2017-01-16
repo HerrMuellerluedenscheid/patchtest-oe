@@ -38,11 +38,11 @@ class PatchSignedOffBy(base.Base):
 
     def setUp(self):
         if self.unidiff_parse_error:
-            self.skip([('Parse error', self.unidiff_parse_error)])
+            self.skip('Parse error %s' % self.unidiff_parse_error)
 
     def test_signed_off_by_presence(self):
         if not PatchSignedOffBy.newpatches:
-            self.skipTest("There are no new software patches, no reason to test %s presence" % PatchSignedOffBy.mark)
+            self.skip("There are no new software patches, no reason to test %s presence" % PatchSignedOffBy.mark)
 
         for newpatch in PatchSignedOffBy.newpatches:
             payload = newpatch.__str__()
