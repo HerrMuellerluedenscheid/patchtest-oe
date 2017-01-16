@@ -67,7 +67,7 @@ class SrcUri(bitbake.Bitbake):
                 filesremoved_from_patchset = set()
                 for patch in self.patchset:
                     if patch.is_removed_file:
-                        filesremoved_from_patchset.add(patch)
+                        filesremoved_from_patchset.add(patch.path)
 
                 # get the deleted files from the SRC_URI
                 filesremoved_from_usr_uri = pretest_files - test_files
