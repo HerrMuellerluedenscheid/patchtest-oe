@@ -18,15 +18,14 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import base
-from parse_upstream_status import upstream_status_literal_valid_status as valid_status
-from parse_upstream_status import upstream_status_mark as mark
+import parse_upstream_status
 import pyparsing
 import re
 
 class PatchUpstreamStatus(base.Base):
 
-    upstream_status_mark  = str(mark).strip('"')
-    upstream_status_regex = re.compile("(?<=\+)%s" % upstream_status_mark)
+    upstream_status_literal_mark  = str(parse_upstream_status.upstream_status_mark).strip('"')
+    upstream_status_regex = re.compile("(?<=\+)%s" % upstream_status_literal_mark)
 
     @classmethod
     def setUpClassLocal(cls):
@@ -39,10 +38,11 @@ class PatchUpstreamStatus(base.Base):
     def setUp(self):
         if self.unidiff_parse_error:
             self.skip([('Python-unidiff parse error', self.unidiff_parse_error)])
+        self.valid_status = parse_upstream_status.upstream_status_literal_valid_status
 
     def test_upstream_status_presence(self):
         if not PatchUpstreamStatus.newpatches:
-            self.skip("There are no new software patches, no reason to test %s presence" % self.upstream_status_mark)
+            self.skip("There are no new software patches, no reason to test %s presence" % self.upstream_status_literal_mark)
 
         for newpatch in PatchUpstreamStatus.newpatches:
             payload = newpatch.__str__()
@@ -53,7 +53,7 @@ class PatchUpstreamStatus(base.Base):
                     break
             else:
                 self.fail('Added patch file is missing Upstream-Status in the header',
-                          'Add Upstream-Status: <status> to the header of %s (possible values: %s)' % (newpatch.path, ', '.join(valid_status)))
+                          'Add Upstream-Status: <status> to the header of %s (possible values: %s)' % (newpatch.path, ', '.join(self.valid_status)))
 
     def test_upstream_status_format(self):
         for newpatch in PatchUpstreamStatus.newpatches:
@@ -68,4 +68,4 @@ class PatchUpstreamStatus(base.Base):
                         parse_upstream_status.upstream_status.parseString(line.lstrip('+'))
                     except pyparsing.ParseException as pe:
                         self.fail('Upstream-Status is in incorrect format',
-                                  'Fix Upstream-Status format in %s so it is one of: %s' % (newpatch.path, ', '.join(valid_status)))
+                                  'Fix Upstream-Status format in %s so it is one of: %s' % (newpatch.path, ', '.join(self.valid_status)))
