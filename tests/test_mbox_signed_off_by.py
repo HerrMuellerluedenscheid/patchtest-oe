@@ -23,6 +23,8 @@ import re
 
 class SignedOffBy(base.Base):
 
+    revert_shortlog_regex = re.compile('Revert\s+".*"')
+
     @classmethod
     def setUpClassLocal(cls):
         # match self.mark with no '+' preceding it
@@ -31,6 +33,9 @@ class SignedOffBy(base.Base):
 
     def test_signed_off_by_presence(self):
         for commit in SignedOffBy.commits:
+            # skip those patches that revert older commits, these do not required the tag presence
+            if self.revert_shortlog_regex.match(commit.shortlog):
+                continue
             if not SignedOffBy.prog.search(commit.payload):
                 self.fail('Patch is missing Signed-off-by',
                           'Sign off the patch (either manually or with "git commit --amend -s")',
