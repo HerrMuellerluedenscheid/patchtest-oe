@@ -24,7 +24,6 @@ import re
 class CVE(base.Base):
 
     re_cve_pattern = re.compile("CVE\-\d{4}\-\d+", re.IGNORECASE)
-    re_cve_word    = re.compile("\s*\+CVE\s?", re.IGNORECASE)
     re_cve_tag     = re.compile("CVE:(\s+CVE\-\d{4}\-\d+)+", re.IGNORECASE)
 
     def setUp(self):
@@ -33,7 +32,7 @@ class CVE(base.Base):
 
     def test_cve_presence_in_commit_message(self):
         for commit in CVE.commits:
-            if self.re_cve_word.search(commit.payload):
+            if self.re_cve_pattern.search(commit.subject):
                 if not self.re_cve_pattern.search(commit.commit_message):
                     self.fail('Missing or incorrectly formatted CVE tag in commit message',
                               'Include a "CVE-xxxx-xxxx" tag in the commit message',
