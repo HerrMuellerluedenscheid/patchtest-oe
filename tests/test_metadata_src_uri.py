@@ -20,6 +20,7 @@
 import bitbake
 import patchtestdata
 import subprocess
+import base
 
 class SrcUri(bitbake.Bitbake):
 
