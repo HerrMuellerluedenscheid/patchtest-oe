@@ -25,13 +25,6 @@ maxlength = 90
 
 class Shortlog(base.Base):
 
-    def test_shortlog_presence(self):
-        for commit in Shortlog.commits:
-            if not commit.shortlog.strip():
-                self.fail('Patch is missing a shortlog (first line of commit message that summarises the patch)',
-                          'Add a shortlog (and commit message)',
-                          commit)
-
     def test_shortlog_format(self):
         for commit in Shortlog.commits:
             shortlog = commit.shortlog
