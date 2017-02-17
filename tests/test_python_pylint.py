@@ -18,56 +18,57 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import base
-import re
 import patchtestdata
 import pylint.epylint as lint
 
 class PyLint(base.Base):
-    pythonpatches = []
+    pythonpatches  = []
+    pylint_pretest = {}
+    pylint_test    = {}
+    pylint_options = " -E --disable='E0611, E1101, F0401, E0602' --msg-template='L:{line} F:{module} I:{msg}'"
 
     @classmethod
     def setUpClassLocal(cls):
         # get just those patches touching python files
+        cls.pythonpatches = []
         for patch in cls.patchset:
             if patch.path.endswith('.py'):
-                cls.pythonpatches.append(patch)
+                if not patch.is_removed_file:
+                    cls.pythonpatches.append(patch)
 
     def setUp(self):
-        self.skip('Pending for Yocto #10789]')
-
         if self.unidiff_parse_error:
             self.skip([('Python-unidiff parse error', self.unidiff_parse_error)])
         if not patchtestdata.PatchTestInput.repo.canbemerged:
-            self.skip('Patch cannot be merged, no reason to execute the test method')
+            self.skipTest('Patch cannot be merged, no reason to execute the test method')
         if not PyLint.pythonpatches:
-            self.skip('No python related patches, skipping test')
+            self.skipTest('No python related patches, skipping test')
 
     def pretest_pylint(self):
-        patchtestdata.PatchTestDataStore['pylint_pretest'] = list()
         for pythonpatch in self.pythonpatches:
             if pythonpatch.is_modified_file:
-                (pylint_stdout, pylint_stderr) = lint.py_run(pythonpatch.path, return_std=True)
-                patchtestdata.PatchTestDataStore['pylint_pretest'].extend(pylint_stdout.readlines())
+                (pylint_stdout, pylint_stderr) = lint.py_run(command_options = pythonpatch.path + self.pylint_options, return_std=True)
+                for line in pylint_stdout.readlines():
+                    if not '*' in line:
+                        if line.strip():
+                            self.pylint_pretest[line.strip().split(' ',1)[0]] = line.strip().split(' ',1)[1]
 
     def test_pylint(self):
-        patchtestdata.PatchTestDataStore['pylint_test'] = list()
         for pythonpatch in self.pythonpatches:
-            (pylint_stdout, pylint_stderr) = lint.py_run(pythonpatch.path, return_std=True)
-            patchtestdata.PatchTestDataStore['pylint_test'].extend(pylint_stdout.readlines())
+            # a condition checking whether a file is renamed or not
+            # unidiff doesn't support this yet
+            if pythonpatch.target_file is not pythonpatch.path:
+                path = pythonpatch.target_file[2:]
+            else:
+                path = pythonpatch.path
+            (pylint_stdout, pylint_stderr) = lint.py_run(command_options = path + self.pylint_options, return_std=True)
+            for line in pylint_stdout.readlines():
+                    if not '*' in line:
+                        if line.strip():
+                            self.pylint_test[line.strip().split(' ',1)[0]] = line.strip().split(' ',1)[1]
 
-        # Removing line numbers of pylint log so system focus just on introduced issues
-        pylint_pretest = [re.sub(':\d+:', ':', pyline) for pyline in patchtestdata.PatchTestDataStore['pylint_pretest']]
-        pylint_test    = [re.sub(':\d+:', ':', pyline) for pyline in patchtestdata.PatchTestDataStore['pylint_test']]
-
-        while pylint_pretest:
-            pretest = pylint_pretest.pop(0)
-            try:
-                pylint_test.remove(pretest)
-            except ValueError as ve:
-                base.logger.warn('Line %s not found on pylint_test lines' % pretest)
-
-        if pylint_test:
-            self.fail('Pylint found issues on your proposed change',
-                      'Check your modified python lines with pylint, specially those lines introduced by your patch',
-                      data=[('Output', pylint_test[0].strip()), ('',''.join(pylint_test[1:]))])
-
+        for issue in self.pylint_test:
+             if self.pylint_test[issue] not in self.pylint_pretest.values():
+                 self.fail('Errors in your Python code were encountered',
+                           'Correct the lines introduced by your patch',
+                           data=[('Output', 'Please, fix the listed issues:'), ('', issue + ' ' + self.pylint_test[issue])])
