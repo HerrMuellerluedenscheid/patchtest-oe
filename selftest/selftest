@@ -33,7 +33,7 @@ def test(root, patch):
     expected_result = a[-1]
     testid          = ".%s.%s" % (klass,testname)
 
-    cmd     = 'patchtest %s -t %s -s tests' % (patchpath, topdir)
+    cmd     = 'patchtest %s -s %s/tests' % (patchpath, topdir)
     results = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
 
     for resultline in results.splitlines():
