@@ -30,7 +30,7 @@ class SrcUri(bitbake.Bitbake):
 
     def setUp(self):
         if self.unidiff_parse_error:
-            self.skip([('Parse error', self.unidiff_parse_error)])
+            self.skip('Python-unidiff parse error')
 
     def pretest_src_uri_left_files(self):
         if not self.modified_pnpvs:

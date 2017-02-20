@@ -37,7 +37,7 @@ class PatchUpstreamStatus(base.Base):
 
     def setUp(self):
         if self.unidiff_parse_error:
-            self.skip([('Python-unidiff parse error', self.unidiff_parse_error)])
+            self.skip('Python-unidiff parse error')
         self.valid_status = parse_upstream_status.upstream_status_literal_valid_status
 
     def test_upstream_status_presence(self):
