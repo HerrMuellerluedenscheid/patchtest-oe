@@ -40,9 +40,9 @@ class PyLint(base.Base):
         if self.unidiff_parse_error:
             self.skip('Python-unidiff parse error')
         if not patchtestdata.PatchTestInput.repo.canbemerged:
-            self.skipTest('Patch cannot be merged, no reason to execute the test method')
+            self.skip('Patch cannot be merged, no reason to execute the test method')
         if not PyLint.pythonpatches:
-            self.skipTest('No python related patches, skipping test')
+            self.skip('No python related patches, skipping test')
 
     def pretest_pylint(self):
         for pythonpatch in self.pythonpatches:
