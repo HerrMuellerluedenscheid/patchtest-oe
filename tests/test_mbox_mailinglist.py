@@ -44,7 +44,7 @@ class MailingList(base.Base):
     def test_target_mailing_list(self):
         """In case of merge failure, check for other targeted projects"""
         if pti.repo.ismerged:
-            self.skipTest('Series merged, no reason to check other mailing lists')
+            self.skip('Series merged, no reason to check other mailing lists')
 
         for patch in self.patchset:
             folders = patch.path.split('/')
