@@ -35,5 +35,5 @@ class Summary(bitbake.Bitbake):
         for summary in added_summaries:
             # "${PN} version ${PN}-${PR}" is the default, so fail if default
             if summary.startswith('%s version %s' % (pn, pv)):
-                self.fail('$s is missing in newly added recipe' % self.metadata,
+                self.fail('%s is missing in newly added recipe' % self.metadata,
                           'Specify the variable %s in %s' % (self.metadata, pn))
