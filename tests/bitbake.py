@@ -87,7 +87,7 @@ class Bitbake(base.Base):
         removed_paths  = []
 
         for patch in cls.patchset:
-            if patch.path.endswith('.bb') or patch.path.endswith('.append') or patch.path.endswith('.inc'):
+            if patch.path.endswith('.bb') or patch.path.endswith('.bbappend') or patch.path.endswith('.inc'):
                 if patch.is_added_file:
                     added_paths.append(patch.path)
                 elif patch.is_modified_file:
