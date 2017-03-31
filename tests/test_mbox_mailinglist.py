@@ -33,6 +33,9 @@ class MailingList(base.Base):
         'oe': ['meta-gpe', 'meta-gnome', 'meta-efl', 'meta-networking', 'meta-multimedia','meta-initramfs', 'meta-ruby', 'contrib', 'meta-xfce', 'meta-filesystems', 'meta-perl', 'meta-webserver', 'meta-systemd', 'meta-oe', 'meta-python']
         }
 
+    # scripts folder is a mix of oe-core and poky, most is oe-core code except:
+    poky_scripts = ['scripts/yocto-bsp', 'scripts/yocto-kernel', 'scripts/yocto-layer', 'scripts/lib/bsp']
+
     Project = collections.namedtuple('Project', ['name', 'listemail', 'gitrepo', 'paths'])
 
     bitbake = Project(name='Bitbake', listemail='bitbake-devel@lists.openembedded.org', gitrepo='http://git.openembedded.org/bitbake/', paths=paths['bitbake'])
@@ -53,6 +56,13 @@ class MailingList(base.Base):
                 if base_path in  project.paths:
                     self.fail('Series sent to the wrong mailing list', 'Send the series again to the correct mailing list (ML)',
                               data=[('Suggested ML', '%s [%s]' % (project.listemail, project.gitrepo))])
+
+            # check for poky's scripts code
+            if base_path.startswith('scripts'):
+                for poky_file in self.poky_scripts:
+                    if patch.path.startswith(poky_file):
+                        self.fail('Series sent to the wrong mailing list', 'Send the series again to the correct mailing list (ML)',
+                                  data=[('Suggested ML', '%s [%s]' % (self.poky.listemail, self.poky.gitrepo))])
 
 
 
