@@ -25,6 +25,7 @@ class MaxLength(base.Base):
     max_length = 180
 
     def test_max_line_length(self):
+        self.skip('Until general agreement with the community, disabling it')
         for patch in self.patchset:
             # for the moment, we are just interested in metadata
             if patch.path.endswith('.patch'):
