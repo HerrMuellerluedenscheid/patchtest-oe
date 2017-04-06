@@ -1,33 +1,30 @@
-From 627d01997fcf6a0581d88047735769ffb2592b82 Mon Sep 17 00:00:00 2001
-From: George McCollister <george.mccollister@gmail.com>
-Date: Tue, 12 Jul 2016 14:10:54 -0500
-Subject: [PATCH] useradd-staticids: use map() instead of imap()
+From eb2aa7b073b164678512d70e41910bd6741dc639 Mon Sep 17 00:00:00 2001
+From: Daniela Plascencia <daniela.plascencia@linux.intel.com>
+Date: Mon, 3 Apr 2017 10:52:03 -0500
+Subject: [PATCH] dpkg: changing recipe
 
-In Python3 the itertools module's imap function has been migrated to the
-globalname space as map(). Calling itertools.imap() will fail because it
-no longer exists.
+This is a test patch changing a recipe
 
-(From OE-Core rev: da7a2c7b00b40a8759dbe9f4ab6df3e337e3d6b6)
-
-
-
+signed-off-by: Daniela Plascencia <daniela.plascencia@linux.intel.com>
 ---
- meta/classes/useradd-staticids.bbclass | 2 +-
+ meta/recipes-devtools/dpkg/{dpkg_1.18.10.bb => dpkg_1.109.100.bb} | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
+ rename meta/recipes-devtools/dpkg/{dpkg_1.18.10.bb => dpkg_1.109.100.bb} (99%)
 
-diff --git a/meta/classes/useradd-staticids.bbclass b/meta/classes/useradd-staticids.bbclass
-index b6e498c..149245b 100644
---- a/meta/classes/useradd-staticids.bbclass
-+++ b/meta/classes/useradd-staticids.bbclass
-@@ -43,7 +43,7 @@ def update_useradd_static_config(d):
-                         if fields[0] not in id_table:
-                             id_table[fields[0]] = fields
-                         else:
--                            id_table[fields[0]] = list(itertools.imap(lambda x, y: x or y, fields, id_table[fields[0]]))
-+                            id_table[fields[0]] = list(map(lambda x, y: x or y, fields, id_table[fields[0]]))
-             except IOError as e:
-                 if e.errno == errno.ENOENT:
-                     pass
--- 
-2.6.6
+diff --git a/meta/recipes-devtools/dpkg/dpkg_1.18.10.bb b/meta/recipes-devtools/dpkg/dpkg_1.109.100.bb
+similarity index 99%
+rename from meta/recipes-devtools/dpkg/dpkg_1.18.10.bb
+rename to meta/recipes-devtools/dpkg/dpkg_1.109.100.bb
+index 21385af878..7a0db44aca 100644
+--- a/meta/recipes-devtools/dpkg/dpkg_1.18.10.bb
++++ b/meta/recipes-devtools/dpkg/dpkg_1.109.100.bb
+@@ -1,5 +1,5 @@
+ require dpkg.inc
+-LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
++LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bba"
+
+ SRC_URI = "http://snapshot.debian.org/archive/debian/20160731T221931Z/pool/main/d/${BPN}/${BPN}_${PV}.tar.xz \
+            file://noman.patch \
+--
+2.11.0
 
