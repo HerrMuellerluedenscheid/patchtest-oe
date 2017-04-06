@@ -1,0 +1,28 @@
+From 8a055c211419d4e3fa01c582db0e0a484beda957 Mon Sep 17 00:00:00 2001
+From: Daniela Plascencia <daniela.plascencia@linux.intel.com>
+Date: Tue, 28 Feb 2017 14:30:46 -0600
+Subject: [PATCH] meta: modifies python-pycurl recipe
+
+This patch makes test_metadata_src_uri.py fail
+
+Signed-off-by: Daniela Plascencia <daniela.plascencia@linux.intel.com>
+---
+ .../python/{python-pycurl_7.21.5.bb => python-pycurl_7.21.6.bb}         | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ rename meta/recipes-devtools/python/{python-pycurl_7.21.5.bb => python-pycurl_7.21.6.bb} (95%)
+
+diff --git a/meta/recipes-devtools/python/python-pycurl_7.21.5.bb b/meta/recipes-devtools/python/python-pycurl_7.21.6.bb
+similarity index 95%
+rename from meta/recipes-devtools/python/python-pycurl_7.21.5.bb
+rename to meta/recipes-devtools/python/python-pycurl_7.21.6.bb
+index 7b41f6d33d..30342cd9b1 100644
+--- a/meta/recipes-devtools/python/python-pycurl_7.21.5.bb
++++ b/meta/recipes-devtools/python/python-pycurl_7.21.6.bb
+@@ -1,4 +1,4 @@
+-SUMMARY = "Python bindings for libcurl"
++SUMMARY = "Python bindings for libcurl Dummy Version"
+ HOMEPAGE = "http://pycurl.sourceforge.net/"
+ SECTION = "devel/python"
+ LICENSE = "LGPLv2.1+ | MIT"
+--
+2.11.0

@@ -1,25 +1,30 @@
-From 2a354a4cc66d885541ac8d3dd2295e43cb591cf2 Mon Sep 17 00:00:00 2001
-From: Leonardo Sandoval <leonardo.sandoval.gonzalez@linux.intel.com>
-Date: Tue, 26 Jul 2016 12:03:53 -0500
-Subject: [PATCH] patchtest-oe: make test_src_uri_left_files fail
+From f07d7d9899e4a89f77eb9c168b7c7848fceff762 Mon Sep 17 00:00:00 2001
+From: Daniela Plascencia <daniela.plascencia@linux.intel.com>
+Date: Wed, 22 Feb 2017 14:35:20 -0600
+Subject: [PATCH] meta: removes a file from openssh recipe
 
-Signed-off-by: Leonardo Sandoval <leonardo.sandoval.gonzalez@linux.intel.com>
+This patch makes test_src_uri_left_files fail
+
+Signed-off-by: Daniela Plascencia <daniela.plascencia@linux.intel.com>
 ---
- meta/recipes-devtools/strace/strace_4.12.bb | 1 -
+ meta/recipes-connectivity/openssh/{openssh_7.4p1.bb => openssh_7.5p1.bb} | 1 -
  1 file changed, 1 deletion(-)
+ rename meta/recipes-connectivity/openssh/{openssh_7.4p1.bb => openssh_7.5p1.bb} (99%)
 
-diff --git a/meta/recipes-devtools/strace/strace_4.12.bb b/meta/recipes-devtools/strace/strace_4.12.bb
-index 70d7402..2221e27 100644
---- a/meta/recipes-devtools/strace/strace_4.12.bb
-+++ b/meta/recipes-devtools/strace/strace_4.12.bb
-@@ -5,7 +5,6 @@ LICENSE = "BSD"
- LIC_FILES_CHKSUM = "file://COPYING;md5=124500c21e856f0912df29295ba104c7"
- 
- SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.xz \
--           file://disable-git-version-gen.patch \
-            file://more-robust-test-for-m32-mx32-compile-support.patch \
-            file://update-gawk-paths.patch \
-            file://use-asm-sgidefs.h.patch \
--- 
-2.1.4
+diff --git a/meta/recipes-connectivity/openssh/openssh_7.4p1.bb b/meta/recipes-connectivity/openssh/openssh_7.5p1.bb
+similarity index 99%
+rename from meta/recipes-connectivity/openssh/openssh_7.4p1.bb
+rename to meta/recipes-connectivity/openssh/openssh_7.5p1.bb
+index 3b3d667a68..1dd7a703f5 100644
+--- a/meta/recipes-connectivity/openssh/openssh_7.4p1.bb
++++ b/meta/recipes-connectivity/openssh/openssh_7.5p1.bb
+@@ -12,7 +12,6 @@ DEPENDS = "zlib openssl"
+ DEPENDS += "${@bb.utils.contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
+ SRC_URI = "http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
+-           file://sshd_config \
+            file://ssh_config \
+            file://init \
+            ${@bb.utils.contains('DISTRO_FEATURES', 'pam', '${PAM_SRC_URI}', '', d)} \
+--
+2.11.0

@@ -1,53 +1,172 @@
-From 54efc8a59341b57873e905aab230262037e377a8 Mon Sep 17 00:00:00 2001
-From: Leonardo Sandoval <leonardo.sandoval.gonzalez@linux.intel.com>
-Date: Tue, 26 Jul 2016 12:03:53 -0500
-Subject: [PATCH] patchtest-oe: make test_src_uri_left_files pass
+From 76edc3f2e7160dc7f841ed89ba22e6bbc82152d3 Mon Sep 17 00:00:00 2001
+From: Daniela Plascencia <daniela.plascencia@linux.intel.com>
+Date: Wed, 22 Feb 2017 14:35:20 -0600
+Subject: [PATCH] meta: removes a file from openssh recipe
 
-Signed-off-by: Leonardo Sandoval <leonardo.sandoval.gonzalez@linux.intel.com>
+This patch makes test_src_uri_left_files pass
+
+Signed-off-by: Daniela Plascencia <daniela.plascencia@linux.intel.com>
 ---
- .../strace/strace/disable-git-version-gen.patch      | 20 --------------------
- meta/recipes-devtools/strace/strace_4.12.bb          |  1 -
- 2 files changed, 21 deletions(-)
- delete mode 100644 meta/recipes-devtools/strace/strace/disable-git-version-gen.patch
+ .../openssh/openssh/sshd_config                    | 133 ---------------------
+ .../openssh/{openssh_7.4p1.bb => openssh_7.5p1.bb} |   1 -
+ 2 files changed, 134 deletions(-)
+ delete mode 100644 meta/recipes-connectivity/openssh/openssh/sshd_config
+ rename meta/recipes-connectivity/openssh/{openssh_7.4p1.bb => openssh_7.5p1.bb} (99%)
 
-diff --git a/meta/recipes-devtools/strace/strace/disable-git-version-gen.patch b/meta/recipes-devtools/strace/strace/disable-git-version-gen.patch
+diff --git a/meta/recipes-connectivity/openssh/openssh/sshd_config b/meta/recipes-connectivity/openssh/openssh/sshd_config
 deleted file mode 100644
-index 7bc1436..0000000
---- a/meta/recipes-devtools/strace/strace/disable-git-version-gen.patch
+index d48bd2b98d..0000000000
+--- a/meta/recipes-connectivity/openssh/openssh/sshd_config
 +++ /dev/null
-@@ -1,20 +0,0 @@
--The git-version-gen script is not included in tarball releases,
--so we need to avoid attempts to call it when running autoreconf.
+@@ -1,133 +0,0 @@
+-#	$OpenBSD: sshd_config,v 1.80 2008/07/02 02:24:18 djm Exp $
 -
--Upstream-Status: Inappropriate [configuration]
+-# This is the sshd server system-wide configuration file.  See
+-# sshd_config(5) for more information.
 -
--Signed-off-by: Andre McCurdy <armccurdy@gmail.com>
+-# This sshd was compiled with PATH=/usr/bin:/bin:/usr/sbin:/sbin
 -
--Index: strace-4.10/configure.ac
--===================================================================
----- strace-4.10.orig/configure.ac
--+++ strace-4.10/configure.ac
--@@ -1,7 +1,7 @@
-- dnl Process this file with autoconf to create configure.  Use autoreconf.
-- AC_PREREQ(2.57)
-- AC_INIT([strace],
---	m4_esyscmd([./git-version-gen .tarball-version]),
--+	m4_esyscmd_s([cat .tarball-version]),
-- 	[strace-devel@lists.sourceforge.net])
-- AC_CONFIG_SRCDIR([strace.c])
-- AC_CONFIG_AUX_DIR([.])
-diff --git a/meta/recipes-devtools/strace/strace_4.12.bb b/meta/recipes-devtools/strace/strace_4.12.bb
-index 70d7402..2221e27 100644
---- a/meta/recipes-devtools/strace/strace_4.12.bb
-+++ b/meta/recipes-devtools/strace/strace_4.12.bb
-@@ -5,7 +5,6 @@ LICENSE = "BSD"
- LIC_FILES_CHKSUM = "file://COPYING;md5=124500c21e856f0912df29295ba104c7"
+-# The strategy used for options in the default sshd_config shipped with
+-# OpenSSH is to specify options with their default value where
+-# possible, but leave them commented.  Uncommented options change a
+-# default value.
+-
+-#Port 22
+-#AddressFamily any
+-#ListenAddress 0.0.0.0
+-#ListenAddress ::
+-
+-# The default requires explicit activation of protocol 1
+-Protocol 2
+-
+-# HostKey for protocol version 1
+-#HostKey /etc/ssh/ssh_host_key
+-# HostKeys for protocol version 2
+-#HostKey /etc/ssh/ssh_host_rsa_key
+-#HostKey /etc/ssh/ssh_host_dsa_key
+-#HostKey /etc/ssh/ssh_host_ecdsa_key
+-#HostKey /etc/ssh/ssh_host_ed25519_key
+-
+-# Lifetime and size of ephemeral version 1 server key
+-#KeyRegenerationInterval 1h
+-#ServerKeyBits 1024
+-
+-# Ciphers and keying
+-#RekeyLimit default none
+-
+-# Logging
+-# obsoletes QuietMode and FascistLogging
+-#SyslogFacility AUTH
+-#LogLevel INFO
+-
+-# Authentication:
+-
+-#LoginGraceTime 2m
+-#PermitRootLogin yes
+-#StrictModes yes
+-#MaxAuthTries 6
+-#MaxSessions 10
+-
+-#RSAAuthentication yes
+-#PubkeyAuthentication yes
+-
+-# The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
+-# but this is overridden so installations will only check .ssh/authorized_keys
+-AuthorizedKeysFile .ssh/authorized_keys
+-
+-#AuthorizedPrincipalsFile none
+-
+-#AuthorizedKeysCommand none
+-#AuthorizedKeysCommandUser nobody
+-
+-# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
+-#RhostsRSAAuthentication no
+-# similar for protocol version 2
+-#HostbasedAuthentication no
+-# Change to yes if you don't trust ~/.ssh/known_hosts for
+-# RhostsRSAAuthentication and HostbasedAuthentication
+-#IgnoreUserKnownHosts no
+-# Don't read the user's ~/.rhosts and ~/.shosts files
+-#IgnoreRhosts yes
+-
+-# To disable tunneled clear text passwords, change to no here!
+-#PasswordAuthentication yes
+-#PermitEmptyPasswords no
+-
+-# Change to no to disable s/key passwords
+-ChallengeResponseAuthentication no
+-
+-# Kerberos options
+-#KerberosAuthentication no
+-#KerberosOrLocalPasswd yes
+-#KerberosTicketCleanup yes
+-#KerberosGetAFSToken no
+-
+-# GSSAPI options
+-#GSSAPIAuthentication no
+-#GSSAPICleanupCredentials yes
+-
+-# Set this to 'yes' to enable PAM authentication, account processing,
+-# and session processing. If this is enabled, PAM authentication will
+-# be allowed through the ChallengeResponseAuthentication and
+-# PasswordAuthentication.  Depending on your PAM configuration,
+-# PAM authentication via ChallengeResponseAuthentication may bypass
+-# the setting of "PermitRootLogin without-password".
+-# If you just want the PAM account and session checks to run without
+-# PAM authentication, then enable this but set PasswordAuthentication
+-# and ChallengeResponseAuthentication to 'no'.
+-#UsePAM no
+-
+-#AllowAgentForwarding yes
+-#AllowTcpForwarding yes
+-#GatewayPorts no
+-#X11Forwarding no
+-#X11DisplayOffset 10
+-#X11UseLocalhost yes
+-#PermitTTY yes
+-#PrintMotd yes
+-#PrintLastLog yes
+-#TCPKeepAlive yes
+-#UseLogin no
+-UsePrivilegeSeparation sandbox # Default for new installations.
+-#PermitUserEnvironment no
+-Compression no
+-ClientAliveInterval 15
+-ClientAliveCountMax 4
+-#UseDNS yes
+-#PidFile /var/run/sshd.pid
+-#MaxStartups 10:30:100
+-#PermitTunnel no
+-#ChrootDirectory none
+-#VersionAddendum none
+-
+-# no default banner path
+-#Banner none
+-
+-# override default of no subsystems
+-Subsystem	sftp	/usr/libexec/sftp-server
+-
+-# Example of overriding settings on a per-user basis
+-#Match User anoncvs
+-#	X11Forwarding no
+-#	AllowTcpForwarding no
+-#	PermitTTY no
+-#	ForceCommand cvs server
+diff --git a/meta/recipes-connectivity/openssh/openssh_7.4p1.bb b/meta/recipes-connectivity/openssh/openssh_7.5p1.bb
+similarity index 99%
+rename from meta/recipes-connectivity/openssh/openssh_7.4p1.bb
+rename to meta/recipes-connectivity/openssh/openssh_7.5p1.bb
+index 3b3d667a68..1dd7a703f5 100644
+--- a/meta/recipes-connectivity/openssh/openssh_7.4p1.bb
++++ b/meta/recipes-connectivity/openssh/openssh_7.5p1.bb
+@@ -12,7 +12,6 @@ DEPENDS = "zlib openssl"
+ DEPENDS += "${@bb.utils.contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
  
- SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.xz \
--           file://disable-git-version-gen.patch \
-            file://more-robust-test-for-m32-mx32-compile-support.patch \
-            file://update-gawk-paths.patch \
-            file://use-asm-sgidefs.h.patch \
+ SRC_URI = "http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
+-           file://sshd_config \
+            file://ssh_config \
+            file://init \
+            ${@bb.utils.contains('DISTRO_FEATURES', 'pam', '${PAM_SRC_URI}', '', d)} \
 -- 
-2.1.4
+2.11.0
 

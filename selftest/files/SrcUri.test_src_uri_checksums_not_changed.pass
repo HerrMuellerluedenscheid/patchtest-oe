@@ -1,0 +1,30 @@
+From 6e1bb1bfed6973007472d05a0a696aa21c0ed3e3 Mon Sep 17 00:00:00 2001
+From: Daniela Plascencia <daniela.plascencia@linux.intel.com>
+Date: Tue, 4 Apr 2017 12:04:39 -0500
+Subject: [PATCH] meta: modifies dpkg recipe
+
+This patch makes test_metadata_src_uri.py pass
+
+Signed-off-by: Daniela Plascencia <daniela.plascencia@linux.intel.com>
+---
+ meta/recipes-devtools/dpkg/{dpkg_1.18.10.bb => dpkg_1.18.109.bb} | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+ rename meta/recipes-devtools/dpkg/{dpkg_1.18.10.bb => dpkg_1.18.109.bb} (93%)
+
+diff --git a/meta/recipes-devtools/dpkg/dpkg_1.18.10.bb b/meta/recipes-devtools/dpkg/dpkg_1.18.109.bb
+similarity index 93%
+rename from meta/recipes-devtools/dpkg/dpkg_1.18.10.bb
+rename to meta/recipes-devtools/dpkg/dpkg_1.18.109.bb
+index 21385af878..9c741e32de 100644
+--- a/meta/recipes-devtools/dpkg/dpkg_1.18.10.bb
++++ b/meta/recipes-devtools/dpkg/dpkg_1.18.109.bb
+@@ -16,5 +16,5 @@ SRC_URI = "http://snapshot.debian.org/archive/debian/20160731T221931Z/pool/main/
+            "
+ SRC_URI_append_class-native = " file://glibc2.5-sync_file_range.patch "
+
+-SRC_URI[md5sum] = "ccff17730c0964428fc186ded2f2f401"
+-SRC_URI[sha256sum] = "025524da41ba18b183ff11e388eb8686f7cc58ee835ed7d48bd159c46a8b6dc5"
++SRC_URI[md5sum] = "ccff17730c0964428fc186ded2f2f402"
++SRC_URI[sha256sum] = "025524da41ba18b183ff11e388eb8686f7cc58ee835ed7d48bd159c46a8b6dc2"
+--
+2.11.0
