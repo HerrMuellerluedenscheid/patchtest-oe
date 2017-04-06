@@ -1,0 +1,34 @@
+From patchwork Tue Feb 14 18:15:28 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: relocate_sdk.py: skip debug files from relocation
+From: Nikunj Kela <nkela@cisco.com>
+X-Patchwork-Id: 137164
+Message-Id: <1487096128-20725-1-git-send-email-nkela@cisco.com>
+To: openembedded-core@lists.openembedded.org
+Date: Tue, 14 Feb 2017 18:15:28 +0000
+
+Debug files only have debug symbols hence don't need
+to be relocated. Relocation script throws errors when
+run on the debug files. This change skips these files
+that have zero size.
+
+Signed-off-by: Nikunj Kela <nkela@cisco.com>
+---
+ scripts/relocate_sdk.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/scripts/relocate_sdk.py b/scripts/relocate_sdk.py
+index e47b4d9..c752fa2 100755
+--- a/scripts/relocate_sdk.py
++++ b/scripts/relocate_sdk.py
+@@ -103,6 +103,8 @@ def change_interpreter(elf_file_name):
+                fname.startswith(b("/lib32/")) or fname.startswith(b("/usr/lib32/")) or \
+                fname.startswith(b("/usr/lib32/")) or fname.startswith(b("/usr/lib64/")):
+                 break
++            if p_filesz == 0:
++                break
+             if (len(new_dl_path) >= p_filesz):
+                 print("ERROR: could not relocate %s, interp size = %i and %i is needed." \
+                     % (elf_file_name, p_memsz, len(new_dl_path) + 1))
