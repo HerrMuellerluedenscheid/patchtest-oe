@@ -1,26 +1,26 @@
-From c85edf96d7c54cb2bbbca59fc95dbf5265495220 Mon Sep 17 00:00:00 2001
-From: Leonardo Sandoval <leonardo.sandoval.gonzalez@linux.intel.com>
-Date: Tue, 12 Jul 2016 08:56:06 -0500
+From 6dda6045c0dbf7f18e5f6129e889a57ddb3a8973 Mon Sep 17 00:00:00 2001
+From: Daniela Plascencia <daniela.plascencia@linux.intel.com>
+Date: Thu, 23 Mar 2017 14:58:10 -0600
 Subject: [PATCH] lic not_mentioned
 
-Signed-off-by: Leonardo Sandoval <leonardo.sandoval.gonzalez@linux.intel.com>
+Signed-off-by: Daniela Plascencia <daniela.plascencia@linux.intel.com>
 ---
  meta/recipes-devtools/cve-check-tool/cve-check-tool_5.6.4.bb | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/meta/recipes-devtools/cve-check-tool/cve-check-tool_5.6.4.bb b/meta/recipes-devtools/cve-check-tool/cve-check-tool_5.6.4.bb
-index 0cf64e4..d8d8aa5 100644
+index fcd3182931..b9fc6b7efb 100644
 --- a/meta/recipes-devtools/cve-check-tool/cve-check-tool_5.6.4.bb
 +++ b/meta/recipes-devtools/cve-check-tool/cve-check-tool_5.6.4.bb
 @@ -4,7 +4,7 @@ The tool will identify potentially vunlnerable software packages within Linux di
  HOMEPAGE = "https://github.com/ikeydoherty/cve-check-tool"
  SECTION = "Development/Tools"
- LICENSE = "GPL-2.0"
+ LICENSE = "GPL-2.0+"
 -LIC_FILES_CHKSUM = "file://LICENSE;md5=e8c1458438ead3c34974bc0be3a03ed6"
 +LIC_FILES_CHKSUM = "file://LICENSE;md5=e8c1458438ead3c34974bc0be3a03ed7"
- 
- SRC_URI = "https://github.com/ikeydoherty/${BPN}/releases/download/v${PV}/${BP}.tar.xz"
- 
--- 
-2.6.6
+
+ SRC_URI = "https://github.com/ikeydoherty/${BPN}/releases/download/v${PV}/${BP}.tar.xz \
+            file://check-for-malloc_trim-before-using-it.patch \
+--
+2.11.0
 
