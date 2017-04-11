@@ -21,12 +21,14 @@ import bitbake
 import patchtestdata
 import subprocess
 import base
+import re
 
 class SrcUri(bitbake.Bitbake):
 
     metadata  = 'SRC_URI'
     md5sum    = 'md5sum'
     sha256sum = 'sha256sum'
+    git_regex = re.compile('^git\:\/\/.*')
 
     def setUp(self):
         if self.unidiff_parse_error:
@@ -41,7 +43,7 @@ class SrcUri(bitbake.Bitbake):
             try:
                 patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)] = bitbake.getVar(self.metadata, pn)
             except subprocess.CalledProcessError:
-                self.skip('Target %s cannot be parse by bitbake' % pn)
+                self.skip('Target %s cannot be parsed by bitbake' % pn)
 
     def test_src_uri_left_files(self):
         if not self.modified_pnpvs:
@@ -52,8 +54,8 @@ class SrcUri(bitbake.Bitbake):
             try:
                 patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)] = bitbake.getVar(self.metadata, pn)
             except subprocess.CalledProcessError:
-                self.skip('Target %s cannot be parse by bitbake' % pn)
-            
+                self.skip('Target %s cannot be parsed by bitbake' % pn)
+
         for pn,_ in self.modified_pnpvs:
             pretest_src_uri = patchtestdata.PatchTestDataStore['pre%s-%s-%s' % (self.shortid(), self.metadata, pn)].split()
             test_src_uri    = patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)].split()
@@ -83,11 +85,16 @@ class SrcUri(bitbake.Bitbake):
         for pn,_ in self.modified_pnpvs:
             try:
                 patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)]  = bitbake.getVar(self.metadata, pn)
+                for uri in bitbake.getVar(self.metadata, pn).split():
+                     if not 'file:' in uri:
+                         if self.git_regex.match(uri):
+                             self.skip('No need to test SRC_URI checksums on a git source')
                 for flag in [self.md5sum, self.sha256sum]:
                     patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), flag, pn)]  = bitbake.getFlag(flag, pn)
             except subprocess.CalledProcessError:
-                self.skip('Target %s cannot be parse by bitbake' % pn)
-        
+                self.skip('Target %s cannot be parsed by bitbake' % pn)
+
+
     def test_src_uri_checksums_not_changed(self):
         # get the proper metadata values
         for pn,_ in self.modified_pnpvs:
@@ -96,8 +103,7 @@ class SrcUri(bitbake.Bitbake):
                 for flag in [self.md5sum, self.sha256sum]:
                     patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), flag, pn)]  = bitbake.getFlag(flag, pn)
             except subprocess.CalledProcessError:
-                self.skip('Target %s cannot be parse by bitbake' % pn)
-
+                self.skip('Target %s cannot be parsed by bitbake' % pn)
         # loop on every src_uri and check if checksums change
         for pn,_ in self.modified_pnpvs:
             pretest_src_uri = patchtestdata.PatchTestDataStore['pre%s-%s-%s' % (self.shortid(), self.metadata, pn)].split()
@@ -106,11 +112,14 @@ class SrcUri(bitbake.Bitbake):
             pretest_uri = [uri for uri in pretest_src_uri if 'file:' not in uri]
             test_uri    = [uri for uri in test_src_uri if 'file:' not in uri]
 
+            for uri in test_uri:
+                if self.git_regex.match(uri):
+                     self.skip('No need to test SRC_URI checksums on a git source')
             if not pretest_uri:
                 base.logger.warn('No SRC_URI found on %s' % pn)
             if not test_uri:
                 base.logger.warn('No SRC_URI found on %s' % pn)
-            
+
             if pretest_uri != test_uri:
                 # chksums must reflect the change
                 for sum in [self.md5sum, self.sha256sum]:
