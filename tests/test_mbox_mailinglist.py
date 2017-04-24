@@ -20,6 +20,7 @@
 import subprocess
 import collections
 import base
+import re
 from patchtestdata import PatchTestInput as pti
 
 class MailingList(base.Base):
@@ -48,6 +49,14 @@ class MailingList(base.Base):
         """In case of merge failure, check for other targeted projects"""
         if pti.repo.ismerged:
             self.skip('Series merged, no reason to check other mailing lists')
+
+        # a meta project may be indicted in the message subject, if this is the case, just fail
+        # TODO: there may be other project with no-meta prefix, we also need to detect these
+        project_regex = re.compile("\[(?P<project>meta-.+)\]")
+        for msg in self.mbox:
+            match = project_regex.match(msg['subject'])
+            if match:
+                self.fail('Series sent to the wrong mailing list', 'Check the project\'s README (%s) and send the patch to the indicated list' % match.group('project'))
 
         for patch in self.patchset:
             folders = patch.path.split('/')
