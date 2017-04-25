@@ -30,6 +30,13 @@ class CVE(base.Base):
         if self.unidiff_parse_error:
             self.skip('Parse error %s' % self.unidiff_parse_error)
 
+        # we are just interested in series that introduce CVE patches, thus discard other
+        # possibilities: modification to current CVEs, patch directly introduced into the
+        # recipe, upgrades already including the CVE, etc.
+        new_cves = [p for p in self.patchset if p.path.endswith('.patch') and p.is_added_file]
+        if not new_cves:
+            self.skip('No new CVE patches introduced')
+
     def test_cve_presence_in_commit_message(self):
         for commit in CVE.commits:
             if self.re_cve_pattern.search(commit.subject):
@@ -39,21 +46,6 @@ class CVE(base.Base):
                               commit)
 
     def test_cve_tag_format(self):
-        # there are cases where an upgrade is done in order
-        # to include a cve (or several) and it is mentioned
-        # on shortlog but there is no attached patch or patches
-        # because CVE is already on the upgrade sw
-        if len(CVE.patchset) == 2:
-            if self.re_cve_pattern.search(' '.join([commit.shortlog for commit in CVE.commits])):
-                recipes = [os.path.basename(p.path).split('_')[0] for p in CVE.patchset]
-                if recipes[0] == recipes[1]:
-                    self.skip('No check is done on recipe upgrades')
-
-        # Skip check on metadata classes
-        if len(CVE.patchset) == 1:
-            if CVE.patchset[0].path.endswith('.bbclass'):
-                self.skip('No check is done on classes')
-
         for commit in CVE.commits:
             if self.re_cve_pattern.search(commit.shortlog):
                 if not self.re_cve_tag.search(commit.payload):
