@@ -56,7 +56,9 @@ class MailingList(base.Base):
         for msg in self.mbox:
             match = project_regex.match(msg['subject'])
             if match:
-                self.fail('Series sent to the wrong mailing list', 'Check the project\'s README (%s) and send the patch to the indicated list' % match.group('project'))
+                self.fail('Series sent to the wrong mailing list',
+                          'Check the project\'s README (%s) and send the patch to the indicated list' % match.group('project'),
+                          commit={'subject': msg['subject'], 'shortlog': msg['subject']})
 
         for patch in self.patchset:
             folders = patch.path.split('/')
@@ -64,14 +66,15 @@ class MailingList(base.Base):
             for project in [self.bitbake, self.doc, self.oe, self.poky]:
                 if base_path in  project.paths:
                     self.fail('Series sent to the wrong mailing list', 'Send the series again to the correct mailing list (ML)',
-                              data=[('Suggested ML', '%s [%s]' % (project.listemail, project.gitrepo))])
+                              data=[('Suggested ML', '%s [%s]' % (project.listemail, project.gitrepo)),
+                                    ('Patch\'s path:', patch.path)])
 
             # check for poky's scripts code
             if base_path.startswith('scripts'):
                 for poky_file in self.poky_scripts:
                     if patch.path.startswith(poky_file):
                         self.fail('Series sent to the wrong mailing list', 'Send the series again to the correct mailing list (ML)',
-                                  data=[('Suggested ML', '%s [%s]' % (self.poky.listemail, self.poky.gitrepo))])
+                                  data=[('Suggested ML', '%s [%s]' % (self.poky.listemail, self.poky.gitrepo)),('Patch\'s path:', patch.path)])
 
 
 
