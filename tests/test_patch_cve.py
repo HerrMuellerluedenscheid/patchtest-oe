@@ -37,17 +37,9 @@ class CVE(base.Base):
         if not new_cves:
             self.skip('No new CVE patches introduced')
 
-    def test_cve_presence_in_commit_message(self):
-        for commit in CVE.commits:
-            if self.re_cve_pattern.search(commit.subject):
-                if not self.re_cve_pattern.search(commit.commit_message):
-                    self.fail('Missing or incorrectly formatted CVE tag in commit message',
-                              'Include a "CVE-xxxx-xxxx" tag in the commit message',
-                              commit)
-
     def test_cve_tag_format(self):
         for commit in CVE.commits:
-            if self.re_cve_pattern.search(commit.shortlog):
+            if self.re_cve_pattern.search(commit.shortlog) or self.re_cve_pattern.search(commit.commit_message):
                 if not self.re_cve_tag.search(commit.payload):
                     self.fail('Missing or incorrectly formatted CVE tag in included patch file',
                               'Correct or include the CVE tag on cve patch with format: "CVE: CVE-YYYY-XXXX"',
