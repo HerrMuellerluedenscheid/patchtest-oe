@@ -58,7 +58,7 @@ class MailingList(base.Base):
             if match:
                 self.fail('Series sent to the wrong mailing list',
                           'Check the project\'s README (%s) and send the patch to the indicated list' % match.group('project'),
-                          commit={'subject': msg['subject'], 'shortlog': msg['subject']})
+                          commit=base.Base.msg_to_commit(msg))
 
         for patch in self.patchset:
             folders = patch.path.split('/')

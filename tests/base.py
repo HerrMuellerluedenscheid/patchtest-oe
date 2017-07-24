@@ -43,22 +43,33 @@ class Base(unittest.TestCase):
     endcommit_messages_regex = re.compile('\(From \w+-\w+ rev:|(?<!\S)Signed-off-by|(?<!\S)---\n')
     patchmetadata_regex   = re.compile('-{3} \S+|\+{3} \S+|@{2} -\d+,\d+ \+\d+,\d+ @{2} \S+')
 
+
+    @staticmethod
+    def msg_to_commit(msg):
+        payload = msg.get_payload()
+        return Commit(subject=msg['subject'].replace('\n', ' ').replace('  ', ' '),
+                      author=msg.get('From'),
+                      shortlog=Base.shortlog(msg['subject']),
+                      commit_message=Base.commit_message(payload),
+                      payload=payload)
+
+    @staticmethod
+    def commit_message(payload):
+        commit_message = payload.__str__()
+        match = Base.endcommit_messages_regex.search(payload)
+        if match:
+            commit_message = payload[:match.start()]
+        return commit_message
+
+    @staticmethod
+    def shortlog(shlog):
+        # remove possible prefix (between brackets) before colon
+        start = shlog.find(']', 0, shlog.find(':'))
+        # remove also newlines and spaces at both sides
+        return shlog[start + 1:].replace('\n', '').strip()
+
     @classmethod
     def setUpClass(cls):
-
-        def commit_message(payload):
-            commit_message = payload.__str__()
-            match = cls.endcommit_messages_regex.search(payload)
-            if match:
-                commit_message = payload[:match.start()]
-            return commit_message
-
-        def shortlog(shlog):
-            # remove possible prefix (between brackets) before colon
-            start = shlog.find(']', 0, shlog.find(':'))
-
-            # remove also newlines and spaces at both sides
-            return shlog[start + 1:].replace('\n', '').strip()
 
         # General objects: mailbox.mbox and patchset
         cls.mbox = mailbox.mbox(pti.repo.patch)
@@ -75,15 +86,8 @@ class Base(unittest.TestCase):
         # Easy to iterate list of commits
         cls.commits = []
         for msg in cls.mbox:
-            payload = msg.get_payload()
-            subject = msg['subject']
-            if  payload and subject:
-                subject = subject.replace('\n', ' ').replace('  ', ' ')
-                cls.commits.append(Commit(subject=subject,
-                                   author=msg.get('From'),
-                                   shortlog=shortlog(msg['subject']),
-                                   commit_message=commit_message(payload),
-                                   payload=payload))
+            if msg['subject'] and msg.get_payload():
+                cls.commits.append(Base.msg_to_commit(msg))
 
         cls.setUpClassLocal()
 
