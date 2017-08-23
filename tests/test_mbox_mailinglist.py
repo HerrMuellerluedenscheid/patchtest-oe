@@ -29,7 +29,7 @@ class MailingList(base.Base):
     paths = {
         'oe-core': ['meta-selftest', 'meta-skeleton', 'meta', 'scripts'],
         'bitbake': ['lib', 'classes', 'conf', 'doc', 'contrib', 'bin'],
-        'documentation': ['adt-manual','ref-manual', 'sdk-manual','bsp-guide', 'profile-manual','template','toaster-manual','dev-manual', 'mega-manual','tools','kernel-dev','yocto-project-qs'],
+        'yocto-docs': ['diagrams', 'documentation', 'presentations'],
         'poky': ['meta-poky','meta-yocto-bsp'],
         'oe': ['meta-gpe', 'meta-gnome', 'meta-efl', 'meta-networking', 'meta-multimedia','meta-initramfs', 'meta-ruby', 'contrib', 'meta-xfce', 'meta-filesystems', 'meta-perl', 'meta-webserver', 'meta-systemd', 'meta-oe', 'meta-python']
         }
@@ -40,7 +40,7 @@ class MailingList(base.Base):
     Project = collections.namedtuple('Project', ['name', 'listemail', 'gitrepo', 'paths'])
 
     bitbake = Project(name='Bitbake', listemail='bitbake-devel@lists.openembedded.org', gitrepo='http://git.openembedded.org/bitbake/', paths=paths['bitbake'])
-    doc     = Project(name='Documentantion', listemail='yocto@yoctoproject.org', gitrepo='http://git.yoctoproject.org/cgit/cgit.cgi/yocto-docs/', paths=paths['documentation'])
+    doc     = Project(name='Documentantion', listemail='yocto@yoctoproject.org', gitrepo='http://git.yoctoproject.org/cgit/cgit.cgi/yocto-docs/', paths=paths['yocto-docs'])
     poky    = Project(name='Poky', listemail='poky@yoctoproject.org', gitrepo='http://git.yoctoproject.org/cgit/cgit.cgi/poky/', paths=paths['poky'])
     oe      = Project(name='oe', listemail='openembedded-devel@lists.openembedded.org', gitrepo='http://git.openembedded.org/meta-openembedded/', paths=paths['oe'])
 
