@@ -26,8 +26,8 @@ class MailingList(base.Base):
     # base paths of main yocto project sub-projects
     paths = {
         'oe-core': ['meta-selftest', 'meta-skeleton', 'meta', 'scripts'],
-        'bitbake': ['lib', 'classes', 'conf', 'doc', 'contrib', 'bin'],
-        'yocto-docs': ['diagrams', 'documentation', 'presentations'],
+        'bitbake': ['bitbake'],
+        'documentation': ['documentation'],
         'poky': ['meta-poky','meta-yocto-bsp'],
         'oe': ['meta-gpe', 'meta-gnome', 'meta-efl', 'meta-networking', 'meta-multimedia','meta-initramfs', 'meta-ruby', 'contrib', 'meta-xfce', 'meta-filesystems', 'meta-perl', 'meta-webserver', 'meta-systemd', 'meta-oe', 'meta-python']
         }
