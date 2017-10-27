@@ -75,6 +75,11 @@ class LicFilesChkSum(base.Metadata):
             pretest = patchtestdata.PatchTestDataStore['pre%s-%s-%s' % (self.shortid(),self.metadata, pn)]
             test    = patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(),self.metadata, pn)]
 
+            # TODO: this is workaround to avoid false-positives when pretest metadata is empty (not reason found yet)
+            # For more info, check bug 12284
+            if not pretest:
+                return
+
             if pretest != test:
                 # if any patch on the series contain reference on the metadata, fail
                 for commit in self.commits:
