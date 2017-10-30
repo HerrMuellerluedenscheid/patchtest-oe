@@ -36,10 +36,11 @@ class LicFilesChkSum(base.Metadata):
             self.skip('No added recipes, skipping test')
 
         for pn in self.added:
-            # we are not interested in images
-            if 'core-image' in pn:
-                continue
             rd = self.tinfoil.parse_recipe(pn)
+            pathname = rd.getVar('FILE')
+            # we are not interested in images
+            if '/images/' in pathname:
+                continue
             lic_files_chksum = rd.getVar(self.metadata)
             if rd.getVar(self.license) == self.closed:
                 continue
@@ -50,13 +51,13 @@ class LicFilesChkSum(base.Metadata):
     def pretest_lic_files_chksum_modified_not_mentioned(self):
         if not self.modified:
             self.skip('No modified recipes, skipping pretest')
-
         # get the proper metadata values
         for pn in self.modified:
-            # we are not interested in images
-            if 'core-image' in pn:
-                continue
             rd = self.tinfoil.parse_recipe(pn)
+            pathname = rd.getVar('FILE')
+            # we are not interested in images
+            if '/images/' in pathname:
+                continue
             patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(),self.metadata,pn)] = rd.getVar(self.metadata)
 
     def test_lic_files_chksum_modified_not_mentioned(self):
@@ -65,10 +66,11 @@ class LicFilesChkSum(base.Metadata):
 
         # get the proper metadata values
         for pn in self.modified:
-            # we are not interested in images
-            if 'core-image' in pn:
-                continue
             rd = self.tinfoil.parse_recipe(pn)
+            pathname = rd.getVar('FILE')
+            # we are not interested in images
+            if '/images/' in pathname:
+                continue
             patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(),self.metadata,pn)] = rd.getVar(self.metadata)
         # compare if there were changes between pre-merge and merge
         for pn in self.modified:
