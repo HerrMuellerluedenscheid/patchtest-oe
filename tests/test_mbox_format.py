@@ -24,4 +24,4 @@ class MboxFormat(base.Base):
         if self.unidiff_parse_error:
             self.fail('Series cannot be parsed correctly due to malformed diff lines',
                       'Create the series again using git-format-patch and ensure it can be applied using git am',
-                      data=[('Diff line', re.sub('^.+:','',self.unidiff_parse_error))])
+                      data=[('Diff line', re.sub('^.+:\s(?<!$)','',self.unidiff_parse_error))])
