@@ -37,7 +37,7 @@ class Merge(base.Base):
             # Currently patchtest is not able to test on non-master branches,
             # so we need to avoid testing on patches targeted for the following
             # stable releases
-            stable_releases = ['krogoth', 'morty', 'pyro']
+            stable_releases = ['morty', 'pyro', 'rocko']
             subjects = [commit.subject for commit in self.commits]
             for release in stable_releases:
                 if release in subjects[0]:
