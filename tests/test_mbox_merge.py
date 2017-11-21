@@ -28,9 +28,21 @@ def headlog():
     return output.split('#')
 
 class Merge(base.Base):
+
     def test_series_merge_on_head(self):
         if not pti.repo.ismerged:
-            commithash, author, date, shortlog = headlog()
-            self.fail('Series does not apply on top of target branch',
-                      'Rebase your series on top of targeted branch',
-                      data=[('Targeted branch', '%s (currently at %s)' % (pti.repo.branch, commithash))])
+
+            # TODO: in order to stop sending false-positives, do this check on
+            # patchtest-oe instead of selecting the correct branch from patchtest.
+            # Currently patchtest is not able to test on non-master branches,
+            # so we need to avoid testing on patches targeted for the following
+            # stable releases
+            stable_releases = ['morty', 'pyro', 'rocko']
+            subjects = [commit.subject for commit in self.commits]
+            for release in stable_releases:
+                if release in subjects[0]:
+                    self.skip('Non-master branch %s, skip test' % release, data=[('patch', pti.repo.patch)])
+            else:
+                commithash, author, date, shortlog = headlog()
+                self.fail('Series does not apply on top of target branch', 'Rebase your series on top of targeted branch',
+                          data=[('Targeted branch', '%s (currently at %s)' % (pti.repo.branch, commithash))])
