@@ -134,29 +134,3 @@ class SrcUri(base.Metadata):
                     test_sum = patchtestdata.PatchTestDataStore['%s-%s-sums' % (self.shortid(), pn)][flag]
                     if pretest_sum == test_sum:
                         self.fail('SRC_URI changed but checksums are the same', 'Include the SRC_URI\'s checksums changes into your patch')
-
-    def test_src_uri_path_not_updated(self):
-        new_patches = set()
-        for patch in self.patchset:
-            if patch.is_added_file and patch.path.endswith('.patch'):
-                new_patches.add(os.path.basename(patch.path))
-
-        if not new_patches:
-            self.skip('No new patches added, skipping test')
-
-        if not self.modified:
-            self.fail('New patch path missing in SRC_URI',
-                       "Add the patch path to the recipe's SRC_URI",
-                       data=[('New patch(es)', '\n'.join(new_patches))])
-
-        for pn in self.modified:
-            rd = self.tinfoil.parse_recipe(pn)
-
-            patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)] = rd.getVar(self.metadata)
-            test_src_uri    = patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)].split()
-            test_files    = set([os.path.basename(patch) for patch in test_src_uri if patch.startswith('file://')])
-
-            if not test_files.issuperset(new_patches):
-                self.fail('New patch path missing in SRC_URI',
-                          "Add the patch path in the recipe's SRC_URI",
-                          data=[('New patch(es)', p) for p in new_patches.difference(test_files)])
