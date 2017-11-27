@@ -19,7 +19,7 @@ import re
 import base
 
 class Bugzilla(base.Base):
-    rexp_detect     = re.compile("\[.*YOCTO.*\]", re.IGNORECASE)
+    rexp_detect     = re.compile("\[\s?YOCTO.*\]", re.IGNORECASE)
     rexp_validation = re.compile("\[(\s?YOCTO\s?#\s?(\d+)\s?,?)+\]", re.IGNORECASE)
 
     def test_bugzilla_entry_format(self):
