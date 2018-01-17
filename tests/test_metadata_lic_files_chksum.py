@@ -24,7 +24,8 @@ class LicFilesChkSum(base.Metadata):
     metadata = 'LIC_FILES_CHKSUM'
     license  = 'LICENSE'
     closed   = 'CLOSED'
-    licmark  = re.compile('%s|%s|CHECKSUM|CHKSUM' % (metadata, license), re.IGNORECASE)
+    lictag   = 'License-Update'
+    lictag_re  = re.compile(lictag)
 
     def setUp(self):
         # these tests just make sense on patches that can be merged
@@ -85,9 +86,9 @@ class LicFilesChkSum(base.Metadata):
             if pretest != test:
                 # if any patch on the series contain reference on the metadata, fail
                 for commit in self.commits:
-                    if self.licmark.search(commit.shortlog) or self.licmark.search(commit.commit_message):
+                    if self.lictag_re.search(commit.commit_message):
                        break
                 else:
-                    self.fail('LIC_FILES_CHKSUM changed on target %s but there was no explanation as to why in the commit message' % pn,
-                              'Provide a reason for LIC_FILES_CHKSUM change in commit message',
+                    self.fail('LIC_FILES_CHKSUM changed on target %s but there is no "%s" tag in commit message' % (pn, self.lictag),
+                              'Include "%s: <description>" into the commit message with a brief description' % self.lictag,
                               data=[('Current checksum', pretest), ('New checksum', test)])
