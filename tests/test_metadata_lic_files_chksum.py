@@ -25,7 +25,7 @@ class LicFilesChkSum(base.Metadata):
     license  = 'LICENSE'
     closed   = 'CLOSED'
     lictag   = 'License-Update'
-    lictag_re  = re.compile("%s:" % lictag)
+    lictag_re  = re.compile("^%s:" % lictag)
 
     def setUp(self):
         # these tests just make sense on patches that can be merged
@@ -86,7 +86,7 @@ class LicFilesChkSum(base.Metadata):
             if pretest != test:
                 # if any patch on the series contain reference on the metadata, fail
                 for commit in self.commits:
-                    if self.lictag_re.match(commit.commit_message):
+                    if self.lictag_re.search(commit.commit_message):
                        break
                 else:
                     self.fail('LIC_FILES_CHKSUM changed on target %s but there is no "%s" tag in commit message' % (pn, self.lictag),
