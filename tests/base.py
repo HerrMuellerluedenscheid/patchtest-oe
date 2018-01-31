@@ -200,10 +200,30 @@ class Metadata(Base):
 
         def find_pn(data, path):
             """Find the PN from data"""
+            pn = None
+            pn_native = None
             for _path, _pn in data:
                 if path in _path:
-                    return _pn
-            return None
+                    if 'native' in _pn:
+                        # store the native PN but look for the non-native one first
+                        pn_native = _pn
+                    else:
+                        pn = _pn
+                        break
+            else:
+                # sent the native PN if found previously
+                if pn_native:
+                    return pn_native
+
+                # on renames (usually upgrades), we need to check (FILE) base names
+                # because the unidiff library does not provided the new filename, just the modified one
+                # and tinfoil datastore, once the patch is merged, will contain the new filename
+                path_basename = path.split('_')[0]
+                for _path, _pn in data:
+                    _path_basename = _path.split('_')[0]
+                    if path_basename == _path_basename:
+                        pn = _pn
+            return pn
 
         if not cls.tinfoil:
             cls.tinfoil = cls.setup_tinfoil()
