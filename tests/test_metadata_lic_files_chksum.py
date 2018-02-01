@@ -25,7 +25,7 @@ class LicFilesChkSum(base.Metadata):
     license  = 'LICENSE'
     closed   = 'CLOSED'
     lictag   = 'License-Update'
-    lictag_re  = re.compile("^%s:" % lictag)
+    lictag_re  = re.compile("^%s:" % lictag, re.MULTILINE)
 
     def setUp(self):
         # these tests just make sense on patches that can be merged
