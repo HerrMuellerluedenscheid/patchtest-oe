@@ -22,7 +22,6 @@ import re
 class CVE(base.Base):
 
     re_cve_pattern = re.compile("CVE\-\d{4}\-\d+", re.IGNORECASE)
-    re_cve_payload_pattern = re.compile("\+CVE\-\d{4}\-\d+", re.IGNORECASE)
     re_cve_payload_tag     = re.compile("\+CVE:(\s+CVE\-\d{4}\-\d+)+")
 
     def setUp(self):
@@ -39,10 +38,12 @@ class CVE(base.Base):
     def test_cve_tag_format(self):
         for commit in CVE.commits:
             if self.re_cve_pattern.search(commit.shortlog) or self.re_cve_pattern.search(commit.commit_message):
+                tag_found = False
                 for line in commit.payload.splitlines():
-                    # first match is lax but second strict
-                    if self.re_cve_payload_pattern.match(line):
-                        if not self.re_cve_payload_tag.match(line):
-                            self.fail('Missing or incorrectly formatted CVE tag in included patch file',
-                                      'Correct or include the CVE tag on cve patch with format: "CVE: CVE-YYYY-XXXX"',
-                                      commit)
+                    if self.re_cve_payload_tag.match(line):
+                        tag_found = True
+                        break
+                if not tag_found:
+                    self.fail('Missing or incorrectly formatted CVE tag in included patch file',
+                              'Correct or include the CVE tag on cve patch with format: "CVE: CVE-YYYY-XXXX"',
+                              commit)
