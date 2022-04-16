@@ -144,10 +144,14 @@ class Base(unittest.TestCase):
     def __str__(self):
         return json.dumps({'id': self.id()})
 
+
 class Metadata(Base):
     @classmethod
     def setUpClassLocal(cls):
         cls.tinfoil = cls.setup_tinfoil()
+
+        if cls.tinfoil is None:
+            raise unittest.SkipTest("Skipping test because tinfoil wasn't loaded")
 
         # get info about added/modified/remove recipes
         cls.added, cls.modified, cls.removed = cls.get_metadata_stats(cls.patchset)
@@ -158,7 +162,7 @@ class Metadata(Base):
 
     @classmethod
     def setup_tinfoil(cls, config_only=False):
-        """Initialize tinfoil api from bitbake"""
+        """Initialize tinfoil api from bitbake."""
 
         # import relevant libraries
         try:
@@ -175,11 +179,12 @@ class Metadata(Base):
 
         # Load tinfoil
         tinfoil = None
+        builddir = os.environ.get('BUILDDIR')
+        if not builddir:
+            logger.warning('BUILDDIR is not defined. Cannot load bitbake')
+            return
+
         try:
-            builddir = os.environ.get('BUILDDIR')
-            if not builddir:
-                logger.warn('Bitbake environment not loaded?')
-                return tinfoil
             os.chdir(builddir)
             tinfoil = bb.tinfoil.Tinfoil()
             tinfoil.prepare(config_only=config_only)
@@ -231,7 +236,6 @@ class Metadata(Base):
             cls.tinfoil = cls.setup_tinfoil()
 
         added_paths, modified_paths, removed_paths = [], [], []
-        added, modified, removed = [], [], []
 
         # get metadata filename additions, modification and removals
         for patch in patchset:
@@ -245,8 +249,8 @@ class Metadata(Base):
 
         data = cls.tinfoil.cooker.recipecaches[''].pkg_fn.items()
 
-        added = [find_pn(data,path) for path in added_paths]
-        modified = [find_pn(data,path) for path in modified_paths]
-        removed = [find_pn(data,path) for path in removed_paths]
+        added = [find_pn(data, path) for path in added_paths]
+        modified = [find_pn(data, path) for path in modified_paths]
+        removed = [find_pn(data, path) for path in removed_paths]
 
         return [a for a in added if a], [m for m in modified if m], [r for r in removed if r]
