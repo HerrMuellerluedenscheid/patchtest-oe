@@ -23,13 +23,13 @@ import pyparsing
 
 maxlength = 90
 
-class Shortlog(base.Base):
 
+class Shortlog(base.Base):
     def test_shortlog_format(self):
         for commit in Shortlog.commits:
             shortlog = commit.shortlog
             if not shortlog.strip():
-                self.skip('Empty shortlog, no reason to execute shortlog format test')
+                self.skip("Empty shortlog, no reason to execute shortlog format test")
             else:
                 # no reason to re-check on revert shortlogs
                 if shortlog.startswith('Revert "'):
@@ -37,9 +37,11 @@ class Shortlog(base.Base):
                 try:
                     parse_shortlog.shortlog.parseString(shortlog)
                 except pyparsing.ParseException as pe:
-                    self.fail('Shortlog does not follow expected format',
-                              'Commit shortlog (first line of commit message) should follow the format "<target>: <summary>"',
-                              commit)
+                    self.fail(
+                        "Shortlog does not follow expected format",
+                        'Commit shortlog (first line of commit message) should follow the format "<target>: <summary>"',
+                        commit,
+                    )
 
     def test_shortlog_length(self):
         for commit in Shortlog.commits:
@@ -49,6 +51,9 @@ class Shortlog(base.Base):
                 continue
             l = len(shortlog)
             if l > maxlength:
-                self.fail('Commit shortlog is too long',
-                          'Edit shortlog so that it is %d characters or less (currently %d characters)' % (maxlength, l),
-                          commit)
+                self.fail(
+                    "Commit shortlog is too long",
+                    "Edit shortlog so that it is %d characters or less (currently %d characters)"
+                    % (maxlength, l),
+                    commit,
+                )

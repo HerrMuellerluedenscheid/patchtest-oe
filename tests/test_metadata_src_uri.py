@@ -24,48 +24,69 @@ import re
 import os
 from patchtestdata import PatchTestInput as pti
 
+
 class SrcUri(base.Metadata):
 
-    metadata  = 'SRC_URI'
-    md5sum    = 'md5sum'
-    sha256sum = 'sha256sum'
-    git_regex = re.compile('^git\:\/\/.*')
+    metadata = "SRC_URI"
+    md5sum = "md5sum"
+    sha256sum = "sha256sum"
+    git_regex = re.compile("^git\:\/\/.*")
 
     def setUp(self):
         # these tests just make sense on patches that can be merged
         if not pti.repo.canbemerged:
-            self.skip('Patch cannot be merged')
+            self.skip("Patch cannot be merged")
 
     def pretest_src_uri_left_files(self):
         if not self.modified:
-            self.skip('No modified recipes, skipping pretest')
+            self.skip("No modified recipes, skipping pretest")
 
         # get the proper metadata values
         for pn in self.modified:
             # we are not interested in images
-            if 'core-image' in pn:
+            if "core-image" in pn:
                 continue
             rd = self.tinfoil.parse_recipe(pn)
-            patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)] = rd.getVar(self.metadata)
+            patchtestdata.PatchTestDataStore[
+                "%s-%s-%s" % (self.shortid(), self.metadata, pn)
+            ] = rd.getVar(self.metadata)
 
     def test_src_uri_left_files(self):
         if not self.modified:
-            self.skip('No modified recipes, skipping pretest')
+            self.skip("No modified recipes, skipping pretest")
 
         # get the proper metadata values
         for pn in self.modified:
             # we are not interested in images
-            if 'core-image' in pn:
+            if "core-image" in pn:
                 continue
             rd = self.tinfoil.parse_recipe(pn)
-            patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)] = rd.getVar(self.metadata)
+            patchtestdata.PatchTestDataStore[
+                "%s-%s-%s" % (self.shortid(), self.metadata, pn)
+            ] = rd.getVar(self.metadata)
 
         for pn in self.modified:
-            pretest_src_uri = patchtestdata.PatchTestDataStore['pre%s-%s-%s' % (self.shortid(), self.metadata, pn)].split()
-            test_src_uri    = patchtestdata.PatchTestDataStore['%s-%s-%s' % (self.shortid(), self.metadata, pn)].split()
+            pretest_src_uri = patchtestdata.PatchTestDataStore[
+                "pre%s-%s-%s" % (self.shortid(), self.metadata, pn)
+            ].split()
+            test_src_uri = patchtestdata.PatchTestDataStore[
+                "%s-%s-%s" % (self.shortid(), self.metadata, pn)
+            ].split()
 
-            pretest_files = set([os.path.basename(patch) for patch in pretest_src_uri if patch.startswith('file://')])
-            test_files    = set([os.path.basename(patch) for patch in test_src_uri    if patch.startswith('file://')])
+            pretest_files = set(
+                [
+                    os.path.basename(patch)
+                    for patch in pretest_src_uri
+                    if patch.startswith("file://")
+                ]
+            )
+            test_files = set(
+                [
+                    os.path.basename(patch)
+                    for patch in test_src_uri
+                    if patch.startswith("file://")
+                ]
+            )
 
             # check if files were removed
             if len(test_files) < len(pretest_files):
@@ -83,7 +104,8 @@ class SrcUri(base.Metadata):
                 # TODO: we are not taking into account  renames, so test may raise false positives
                 not_removed = filesremoved_from_usr_uri - filesremoved_from_patchset
                 if not_removed:
-                    self.fail('Patches not removed from tree',
-                              'Amend the patch containing the software patch file removal',
-                              data=[('Patch', f) for f in not_removed])
-
+                    self.fail(
+                        "Patches not removed from tree",
+                        "Amend the patch containing the software patch file removal",
+                        data=[("Patch", f) for f in not_removed],
+                    )

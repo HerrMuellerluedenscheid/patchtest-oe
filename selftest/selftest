@@ -23,31 +23,37 @@ import os
 import subprocess
 
 currentdir = os.path.dirname(os.path.abspath(__file__))
-patchesdir = os.path.join(currentdir, 'files')
-topdir     = os.path.dirname(currentdir)
+patchesdir = os.path.join(currentdir, "files")
+topdir = os.path.dirname(currentdir)
+
 
 def test(root, patch):
-    res = True
     patchpath = os.path.abspath(os.path.join(root, patch))
 
-    a               = patch.split('.')
+    a = patch.split(".")
     klass, testname = a[0], a[1]
     expected_result = a[-1]
-    testid          = ".%s.%s" % (klass,testname)
+    testid = ".%s.%s" % (klass, testname)
 
-    cmd     = 'patchtest %s -s %s/tests' % (patchpath, topdir)
-    results = subprocess.check_output(cmd, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+    cmd = "patchtest %s -s %s/tests" % (patchpath, topdir)
+    results = subprocess.check_output(
+        cmd, stderr=subprocess.STDOUT, universal_newlines=True, shell=True
+    )
 
     for resultline in results.splitlines():
         if testid in resultline:
             result, _ = resultline.split()
             if result.lower() != expected_result.lower():
-                print ('patch=%s expected=%s actual=%s cmd=%s' % (patch, expected_result.lower(), result.lower(), cmd))
+                print(
+                    "patch=%s expected=%s actual=%s cmd=%s"
+                    % (patch, expected_result.lower(), result.lower(), cmd)
+                )
             break
     else:
-        print ("No test for=%s" % patch)
+        print("No test for=%s" % patch)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     for root, dirs, patches in os.walk(patchesdir):
         for patch in patches:
             test(root, patch)

@@ -21,18 +21,27 @@ import subprocess
 import base
 from patchtestdata import PatchTestInput as pti
 
+
 def headlog():
     output = subprocess.check_output(
         "cd %s; git log --pretty='%%h#%%aN#%%cD:#%%s' -1" % pti.repodir,
         universal_newlines=True,
-        shell=True
-        )
-    return output.split('#')
+        shell=True,
+    )
+    return output.split("#")
+
 
 class Merge(base.Base):
     def test_series_merge_on_head(self):
         if not pti.repo.ismerged:
             commithash, author, date, shortlog = headlog()
-            self.fail('Series does not apply on top of target branch',
-                      'Rebase your series on top of targeted branch',
-                      data=[('Targeted branch', '%s (currently at %s)' % (pti.repo.branch, commithash))])
+            self.fail(
+                "Series does not apply on top of target branch",
+                "Rebase your series on top of targeted branch",
+                data=[
+                    (
+                        "Targeted branch",
+                        "%s (currently at %s)" % (pti.repo.branch, commithash),
+                    )
+                ],
+            )

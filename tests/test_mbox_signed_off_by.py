@@ -21,6 +21,7 @@ import base
 import parse_signed_off_by
 import re
 
+
 class SignedOffBy(base.Base):
 
     revert_shortlog_regex = re.compile('Revert\s+".*"')
@@ -37,6 +38,8 @@ class SignedOffBy(base.Base):
             if self.revert_shortlog_regex.match(commit.shortlog):
                 continue
             if not SignedOffBy.prog.search(commit.payload):
-                self.fail('Patch is missing Signed-off-by',
-                          'Sign off the patch (either manually or with "git commit --amend -s")',
-                          commit)
+                self.fail(
+                    "Patch is missing Signed-off-by",
+                    'Sign off the patch (either manually or with "git commit --amend -s")',
+                    commit,
+                )

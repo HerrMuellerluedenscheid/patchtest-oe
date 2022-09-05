@@ -22,6 +22,6 @@
 import pyparsing
 import common
 
-target        = pyparsing.OneOrMore(pyparsing.Word(pyparsing.printables.replace(':','')))
-summary       = pyparsing.OneOrMore(pyparsing.Word(pyparsing.printables))
-shortlog       = common.start + target + common.colon + summary + common.end
+target = pyparsing.OneOrMore(pyparsing.Word(pyparsing.printables.replace(":", "")))
+summary = pyparsing.OneOrMore(pyparsing.Word(pyparsing.printables))
+shortlog = common.start + target + common.colon + summary + common.end

@@ -22,7 +22,7 @@ import pyparsing
 # general
 colon = pyparsing.Literal(":")
 start = pyparsing.LineStart()
-end   = pyparsing.LineEnd()
+end = pyparsing.LineEnd()
 at = pyparsing.Literal("@")
 lessthan = pyparsing.Literal("<")
 greaterthan = pyparsing.Literal(">")
@@ -32,8 +32,8 @@ inappropriate = pyparsing.CaselessLiteral("Inappropriate")
 submitted = pyparsing.CaselessLiteral("Submitted")
 
 # word related
-nestexpr = pyparsing.nestedExpr(opener='[', closer=']')
+nestexpr = pyparsing.nestedExpr(opener="[", closer="]")
 inappropriateinfo = pyparsing.Literal("Inappropriate") + nestexpr
 submittedinfo = pyparsing.Literal("Submitted") + nestexpr
 word = pyparsing.Word(pyparsing.alphas)
-worddot = pyparsing.Word(pyparsing.alphas+".")
+worddot = pyparsing.Word(pyparsing.alphas + ".")

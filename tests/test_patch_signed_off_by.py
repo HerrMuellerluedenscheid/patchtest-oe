@@ -21,14 +21,14 @@ import base
 import parse_signed_off_by
 import re
 
-class PatchSignedOffBy(base.Base):
 
+class PatchSignedOffBy(base.Base):
     @classmethod
     def setUpClassLocal(cls):
         cls.newpatches = []
         # get just those relevant patches: new software patches
         for patch in cls.patchset:
-            if patch.path.endswith('.patch') and patch.is_added_file:
+            if patch.path.endswith(".patch") and patch.is_added_file:
                 cls.newpatches.append(patch)
 
         cls.mark = str(parse_signed_off_by.signed_off_by_mark).strip('"')
@@ -38,11 +38,14 @@ class PatchSignedOffBy(base.Base):
 
     def setUp(self):
         if self.unidiff_parse_error:
-            self.skip('Parse error %s' % self.unidiff_parse_error)
+            self.skip("Parse error %s" % self.unidiff_parse_error)
 
     def test_signed_off_by_presence(self):
         if not PatchSignedOffBy.newpatches:
-            self.skip("There are no new software patches, no reason to test %s presence" % PatchSignedOffBy.mark)
+            self.skip(
+                "There are no new software patches, no reason to test %s presence"
+                % PatchSignedOffBy.mark
+            )
 
         for newpatch in PatchSignedOffBy.newpatches:
             payload = newpatch.__str__()
@@ -52,5 +55,7 @@ class PatchSignedOffBy(base.Base):
                 if PatchSignedOffBy.prog.search(payload):
                     break
             else:
-                self.fail('A patch file has been added, but does not have a Signed-off-by tag',
-                          'Sign off the added patch file (%s)' % newpatch.path)
+                self.fail(
+                    "A patch file has been added, but does not have a Signed-off-by tag",
+                    "Sign off the added patch file (%s)" % newpatch.path,
+                )

@@ -21,31 +21,38 @@ import base
 import os
 import re
 
+
 class CVE(base.Base):
 
     re_cve_pattern = re.compile("CVE\-\d{4}\-\d+", re.IGNORECASE)
-    re_cve_payload_tag     = re.compile("\+CVE:(\s+CVE\-\d{4}\-\d+)+")
+    re_cve_payload_tag = re.compile("\+CVE:(\s+CVE\-\d{4}\-\d+)+")
 
     def setUp(self):
         if self.unidiff_parse_error:
-            self.skip('Parse error %s' % self.unidiff_parse_error)
+            self.skip("Parse error %s" % self.unidiff_parse_error)
 
         # we are just interested in series that introduce CVE patches, thus discard other
         # possibilities: modification to current CVEs, patch directly introduced into the
         # recipe, upgrades already including the CVE, etc.
-        new_cves = [p for p in self.patchset if p.path.endswith('.patch') and p.is_added_file]
+        new_cves = [
+            p for p in self.patchset if p.path.endswith(".patch") and p.is_added_file
+        ]
         if not new_cves:
-            self.skip('No new CVE patches introduced')
+            self.skip("No new CVE patches introduced")
 
     def test_cve_tag_format(self):
         for commit in CVE.commits:
-            if self.re_cve_pattern.search(commit.shortlog) or self.re_cve_pattern.search(commit.commit_message):
+            if self.re_cve_pattern.search(
+                commit.shortlog
+            ) or self.re_cve_pattern.search(commit.commit_message):
                 tag_found = False
                 for line in commit.payload.splitlines():
                     if self.re_cve_payload_tag.match(line):
                         tag_found = True
                         break
                 if not tag_found:
-                    self.fail('Missing or incorrectly formatted CVE tag in included patch file',
-                              'Correct or include the CVE tag on cve patch with format: "CVE: CVE-YYYY-XXXX"',
-                              commit)
+                    self.fail(
+                        "Missing or incorrectly formatted CVE tag in included patch file",
+                        'Correct or include the CVE tag on cve patch with format: "CVE: CVE-YYYY-XXXX"',
+                        commit,
+                    )

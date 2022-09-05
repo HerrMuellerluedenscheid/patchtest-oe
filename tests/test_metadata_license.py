@@ -21,26 +21,27 @@ import base
 import os
 from patchtestdata import PatchTestInput as pti
 
+
 class License(base.Metadata):
-    metadata = 'LICENSE'
-    invalid_license = 'PATCHTESTINVALID'
+    metadata = "LICENSE"
+    invalid_license = "PATCHTESTINVALID"
 
     def setUp(self):
         # these tests just make sense on patches that can be merged
         if not pti.repo.canbemerged:
-            self.skip('Patch cannot be merged')
+            self.skip("Patch cannot be merged")
 
     def test_license_presence(self):
         if not self.added:
-            self.skip('No added recipes, skipping test')
+            self.skip("No added recipes, skipping test")
 
         # TODO: this is a workaround so we can parse the recipe not
         # containing the LICENSE var: add some default license instead
         # of INVALID into auto.conf, then remove this line at the end
-        auto_conf = os.path.join(os.environ.get('BUILDDIR'), 'conf', 'auto.conf')
-        open_flag = 'w'
+        auto_conf = os.path.join(os.environ.get("BUILDDIR"), "conf", "auto.conf")
+        open_flag = "w"
         if os.path.exists(auto_conf):
-            open_flag = 'a'
+            open_flag = "a"
         with open(auto_conf, open_flag) as fd:
             for pn in self.added:
                 fd.write('LICENSE ??= "%s"\n' % self.invalid_license)
@@ -54,15 +55,17 @@ class License(base.Metadata):
                 break
 
         # remove auto.conf line or the file itself
-        if open_flag == 'w':
+        if open_flag == "w":
             os.remove(auto_conf)
         else:
-            fd = open(auto_conf, 'r')
+            fd = open(auto_conf, "r")
             lines = fd.readlines()
             fd.close()
-            with open(auto_conf, 'w') as fd:
-                fd.write(''.join(lines[:-1]))
+            with open(auto_conf, "w") as fd:
+                fd.write("".join(lines[:-1]))
 
         if no_license:
-            self.fail('Recipe does not have the LICENSE field set', 'Include a LICENSE into the new recipe')
-
+            self.fail(
+                "Recipe does not have the LICENSE field set",
+                "Include a LICENSE into the new recipe",
+            )
